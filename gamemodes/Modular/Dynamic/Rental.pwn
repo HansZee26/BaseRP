@@ -54,12 +54,12 @@ stock Rental_Create(playerid, veh1, veh2)
 FUNC::OnRentalCreated(id)
 {
 	if (id == -1 || !RentData[id][rentExists])
-	    return 0;
+	    return false;
 
 	RentData[id][rentID] = cache_insert_id();
 	Rental_Save(id);
 
-	return 1;
+	return true;
 }
 
 FUNC::Rental_Refresh(id)
@@ -77,7 +77,7 @@ FUNC::Rental_Refresh(id)
         RentData[id][rentText] = CreateDynamic3DTextLabel(string, COLOR_CLIENT, RentData[id][rentPos][0], RentData[id][rentPos][1], RentData[id][rentPos][2], 15.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, -1, -1);
 		RentData[id][rentPickup] = CreateDynamicPickup(1239, 23, RentData[id][rentPos][0], RentData[id][rentPos][1], RentData[id][rentPos][2], -1, -1);
 	}
-	return 1;
+	return true;
 }
 
 FUNC::Rental_Load()
@@ -104,7 +104,7 @@ FUNC::Rental_Load()
 	        Rental_Refresh(i);
 		}
 	}
-	return 1;
+	return true;
 }
 
 stock Rental_Save(id)
@@ -125,7 +125,7 @@ stock Rental_Save(id)
 	mysql_format(sqlcon, query, sizeof(query), "%s`Price2`='%d' ", query, RentData[id][rentModel][1]);
 	mysql_format(sqlcon, query, sizeof(query), "%sWHERE `ID` = '%d'", query, RentData[id][rentID]);
 	mysql_query(sqlcon, query, true);
-	return 1;
+	return true;
 }
 
 //==[ Command ]==
@@ -152,7 +152,7 @@ CMD:unrentvehicle(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_SERVER, "RENTAL: {FFFFFF}Kamu telah mengembalikan %s Rental milikmu!", GetVehicleName(vehicleid));
 		}
 	}
-	return 1;
+	return true;
 }
 CMD:rentvehicle(playerid, params[])
 {
@@ -176,7 +176,7 @@ CMD:rentvehicle(playerid, params[])
 			PlayerData[playerid][pRenting] = i;
 		}
 	}
-	return 1;
+	return true;
 }
 
 CMD:editrental(playerid, params[])
@@ -193,7 +193,7 @@ CMD:editrental(playerid, params[])
     {
         SendSyntaxMessage(playerid, "/editrental [id] [name]");
         SendClientMessage(playerid, COLOR_SERVER, "Names:{FFFFFF} location, spawn, vehicle(1-2), price(1-2)");
-        return 1;
+        return true;
     }
     if((id < 0 || id >= MAX_RENTAL))
         return SendErrorMessage(playerid, "You have specified an invalid ID.");
@@ -266,7 +266,7 @@ CMD:editrental(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmRental: {FFFFFF}Kamu telah mengubah posisi Spawn Rental ID: %d", id);
 		Rental_Save(id);
 	}
-	return 1;
+	return true;
 }
 CMD:createrental(playerid, params[])
 {
@@ -284,5 +284,5 @@ CMD:createrental(playerid, params[])
 	    return SendErrorMessage(playerid, "Kamu tidak bisa membuat lebih banyak Rental!");
 	    
 	SendServerMessage(playerid, "Kamu telah membuat Rental Point ID: %d", id);
-	return 1;
+	return true;
 }

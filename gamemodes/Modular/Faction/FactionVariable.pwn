@@ -39,7 +39,7 @@ new FactionData[MAX_FACTIONS][factionData];
 stock GetFactionType(playerid)
 {
 	if (PlayerData[playerid][pFaction] == -1)
-	    return 0;
+	    return false;
 
 	return (FactionData[PlayerData[playerid][pFaction]][factionType]);
 }

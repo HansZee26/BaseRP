@@ -74,12 +74,12 @@ stock Vehicle_Inside(playerid)
 FUNC::OnPlayerVehicleCreated(carid)
 {
 	if (carid == -1 || !VehicleData[carid][vExists])
-	    return 0;
+	    return false;
 
 	VehicleData[carid][vID] = cache_insert_id();
 	VehicleData[carid][vExists] = true;
 	SaveVehicle(carid);
-	return 1;
+	return true;
 }
 
 FUNC::Vehicle_GetStatus(carid)
@@ -96,29 +96,29 @@ FUNC::Vehicle_GetStatus(carid)
 		GetVehicleZAngle(VehicleData[carid][vVehicle],VehicleData[carid][vPos][3]);
 
 	}
-	return 1;
+	return true;
 }
 
 stock Vehicle_IsOwner(playerid, carid)
 {
 	if(PlayerData[playerid][pID] == -1)
-		return 0;
+		return false;
 
 	if(VehicleData[carid][vExists] && VehicleData[carid][vOwner] == PlayerData[playerid][pID])
-		return 1;
+		return true;
 
-	return 0;
+	return false;
 }
 
 stock Vehicle_HaveAccess(playerid, carid)
 {
 	if(PlayerData[playerid][pID] == -1)
-		return 0;
+		return false;
 
 	if(VehicleData[carid][vExists] && VehicleData[carid][vOwner] == PlayerData[playerid][pID] || PlayerData[playerid][pVehKey] == VehicleData[carid][vID])
-		return 1;
+		return true;
 
-	return 0;
+	return false;
 }
 FUNC::UnloadPlayerVehicle(playerid)
 {
@@ -164,7 +164,7 @@ FUNC::UnloadPlayerVehicle(playerid)
 			
 		}
 	}
-	return 1;
+	return true;
 }
 
 stock VehicleRental_Create(ownerid, modelid, Float:x, Float:y, Float:z, Float:angle, time, rentid)
@@ -230,7 +230,7 @@ stock Vehicle_Delete(carid)
 	    VehicleData[carid][vVehicle] = INVALID_VEHICLE_ID;
 	    VehicleData[carid][vRental] = -1;
 	}
-	return 1;
+	return true;
 }
 
 stock Vehicle_Create(ownerid, modelid, Float:x, Float:y, Float:z, Float:angle, color1, color2)
@@ -357,7 +357,7 @@ FUNC::LoadPlayerVehicle(playerid)
 			}
 		}
 	}
-	return 1;
+	return true;
 }
 
 FUNC::OnPlayerVehicleRespawn(i)
@@ -388,7 +388,7 @@ FUNC::OnPlayerVehicleRespawn(i)
 			SwitchVehicleDoors(VehicleData[i][vVehicle], false);
 		}
 	}
-    return 1;
+    return true;
 }
 
 stock SaveVehicle(i)
@@ -422,7 +422,7 @@ stock SaveVehicle(i)
 	mysql_format(sqlcon, cQuery, sizeof(cQuery), "%sWHERE `vehID` = %d", cQuery, VehicleData[i][vID]);
 	mysql_query(sqlcon, cQuery, true);
 	
-	return 1;
+	return true;
 }
 
 //==[ Command ]==
@@ -438,7 +438,7 @@ CMD:vcreate(playerid, params[])
 	GetPlayerFacingAngle(playerid, pos[3]);
     Vehicle_Create(PlayerData[playerid][pID], model, pos[0], pos[1], pos[2], pos[3], 6, 6);
     SendServerMessage(playerid, "Vehicle created!");
-	return 1;
+	return true;
 }
 
 CMD:veh(playerid, params[])
@@ -476,7 +476,7 @@ CMD:veh(playerid, params[])
 	SwitchVehicleEngine(vehicleid, true);
 	VehCore[vehicleid][vehFuel] = 100;
 	SendServerMessage(playerid, "You have spawned a %s.", ReturnVehicleModelName(model[0]));
-	return 1;
+	return true;
 }
 
 CMD:v(playerid, params[])
@@ -491,7 +491,7 @@ CMD:v(playerid, params[])
 	{
 	    SendSyntaxMessage(playerid, "/v [name]");
 	    SendClientMessage(playerid, COLOR_SERVER, "Names:{FFFFFF} list, lock, engine");
-	    return 1;
+	    return true;
 	}
 	if(!strcmp(type, "engine", true))
 	{
@@ -544,5 +544,5 @@ CMD:v(playerid, params[])
 		else
 			SendErrorMessage(playerid, "You don't have any Vehicles!");
 	}
-	return 1;
+	return true;
 }

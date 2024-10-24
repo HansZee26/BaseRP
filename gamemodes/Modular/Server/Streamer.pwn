@@ -21,11 +21,11 @@ stock StreamerConfig()
 	{
 		Streamer_DestroyAllVisibleItems(playerid, 0);
 	}
-	return 1;
+	return true;
 }
 
 CMD:config(playerid, params[])
 {
 	Dialog_Show(playerid, DIALOG_STREAMER_CONFIG, DIALOG_STYLE_LIST, "Maximum object Configuration", "High level Configuration\nMedium level Configuration\nLow level Configuration\nPotato level Configuration", "Set", "Close");
-	return 1;
+	return true;
 }

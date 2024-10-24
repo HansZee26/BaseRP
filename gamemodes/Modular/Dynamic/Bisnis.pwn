@@ -123,25 +123,25 @@ stock Business_Create(playerid, type, price)
 stock Biz_IsOwner(playerid, id)
 {
 	if(!BizData[id][bizExists])
-	    return 0;
+	    return false;
 	    
 	if(BizData[id][bizOwner] == PlayerData[playerid][pID])
-		return 1;
+		return true;
 		
-	return 0;
+	return false;
 }
 
 FUNC::OnBusinessCreated(bizid)
 {
 	if (bizid == -1 || !BizData[bizid][bizExists])
-	    return 0;
+	    return false;
 
 	BizData[bizid][bizID] = cache_insert_id();
 	BizData[bizid][bizWorld] = BizData[bizid][bizID]+1000;
 	
 	Business_Save(bizid);
 
-	return 1;
+	return true;
 }
 
 FUNC::Business_Load()
@@ -181,7 +181,7 @@ FUNC::Business_Load()
 			Business_Refresh(i);
 		}
 	}
-	return 1;
+	return true;
 }
 stock Business_Save(bizid)
 {
@@ -263,14 +263,14 @@ FUNC::Business_Refresh(bizid)
 		BizData[bizid][bizCP] = CreateDynamicCP(BizData[bizid][bizExt][0], BizData[bizid][bizExt][1], BizData[bizid][bizExt][2], 1.0, -1, -1, -1, 2.0);
 		BizData[bizid][bizPickup] = CreateDynamicPickup(19130, 23, BizData[bizid][bizExt][0], BizData[bizid][bizExt][1], BizData[bizid][bizExt][2], -1, -1);
 	}
-	return 1;
+	return true;
 }
 
 stock SetProductPrice(playerid)
 {
 	new bid = PlayerData[playerid][pInBiz], string[712];
 	if(!BizData[bid][bizExists])
-	    return 0;
+	    return false;
 
 	switch(BizData[bid][bizType])
 	{
@@ -320,14 +320,14 @@ stock SetProductPrice(playerid)
 		}
 	}
 	Dialog_Show(playerid, DIALOG_BIZPRICE, DIALOG_STYLE_TABLIST_HEADERS, "Set Product Price", string, "Select", "Close");
-	return 1;
+	return true;
 }
 
 stock SetProductName(playerid)
 {
 	new bid = PlayerData[playerid][pInBiz], string[712];
 	if(!BizData[bid][bizExists])
-	    return 0;
+	    return false;
 
 	switch(BizData[bid][bizType])
 	{
@@ -377,14 +377,14 @@ stock SetProductName(playerid)
 		}
 	}
 	Dialog_Show(playerid, DIALOG_BIZPROD, DIALOG_STYLE_TABLIST_HEADERS, "Set Product Name", string, "Select", "Close");
-	return 1;
+	return true;
 }
 
 stock ShowBusinessMenu(playerid)
 {
 	new bid = PlayerData[playerid][pInBiz], string[712];
 	if(!BizData[bid][bizExists])
-	    return 0;
+	    return false;
 	    
 	switch(BizData[bid][bizType])
 	{
@@ -434,7 +434,7 @@ stock ShowBusinessMenu(playerid)
 		}
 	}
 	Dialog_Show(playerid, DIALOG_BIZBUY, DIALOG_STYLE_TABLIST_HEADERS, "Business Product", string, "Select", "Close");
-	return 1;
+	return true;
 }
 
 //==[ Command ]==
@@ -448,7 +448,7 @@ CMD:biz(playerid, params[])
 	{
 	    SendSyntaxMessage(playerid, "/biz [name]");
 	    SendClientMessage(playerid, COLOR_SERVER, "Names:{FFFFFF} buy, convertfuel, reqstock, menu, lock");
-	    return 1;
+	    return true;
 	}
 	if(!strcmp(type, "buy", true))
 	{
@@ -483,7 +483,7 @@ CMD:biz(playerid, params[])
 		else
 			SendErrorMessage(playerid, "Kamu tidak berada didalam bisnis milikmu!");
 	}
-	return 1;
+	return true;
 }
 
 
@@ -494,7 +494,7 @@ CMD:buy(playerid, params[])
 	{
 	    ShowBusinessMenu(playerid);
 	}
-	return 1;
+	return true;
 }
 
 CMD:editbiz(playerid, params[])
@@ -511,7 +511,7 @@ CMD:editbiz(playerid, params[])
     {
         SendSyntaxMessage(playerid, "/editbiz [id] [name]");
         SendClientMessage(playerid, COLOR_SERVER, "Names:{FFFFFF} location, interior, fuelpoint, fuelstock, price, stock");
-        return 1;
+        return true;
     }
     if((id < 0 || id >= MAX_BUSINESS))
         return SendErrorMessage(playerid, "You have specified an invalid ID.");
@@ -527,7 +527,7 @@ CMD:editbiz(playerid, params[])
 
 		SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmBiz: {FFFFFF}Kamu telah mengubah posisi Business ID: %d", id);
     }
-    return 1;
+    return true;
 }
 
 CMD:createbiz(playerid, params[])
@@ -544,7 +544,7 @@ CMD:createbiz(playerid, params[])
  	{
 	 	SendSyntaxMessage(playerid, "/createbiz [type] [price]");
     	SendClientMessage(playerid, COLOR_SERVER, "Type:{FFFFFF} 1: Fast Food | 2: 24/7 | 3: Clothes | 4: Electronic");
-    	return 1;
+    	return true;
 	}
 	if (type < 1 || type > 4)
 	    return SendErrorMessage(playerid, "Invalid type specified. Types range from 1 to 7.");
@@ -555,5 +555,5 @@ CMD:createbiz(playerid, params[])
 	    return SendErrorMessage(playerid, "The server has reached the limit for businesses.");
 
 	SendServerMessage(playerid, "You have successfully created business ID: %d.", id);
-	return 1;
+	return true;
 }

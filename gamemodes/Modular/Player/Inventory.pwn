@@ -53,7 +53,7 @@ FUNC::OnPlayerUseItem(playerid, itemid, name[])
 		Inventory_Remove(playerid, "Water", 1);
         SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s takes a water mineral and drinks it.", ReturnName(playerid));
 	}
-	return 1;
+	return true;
 }
 
 stock Inventory_Clear(playerid)
@@ -116,7 +116,7 @@ stock Inventory_Count(playerid, const item[])
 	if (itemid != -1)
 	    return InventoryData[playerid][itemid][invQuantity];
 
-	return 0;
+	return false;
 }
 
 stock PlayerHasItem(playerid, const item[])
@@ -137,7 +137,7 @@ stock Inventory_Set(playerid, const item[], model, amount)
 	else if (amount < 1 && itemid != -1)
 	    Inventory_Remove(playerid, item, -1);
 
-	return 1;
+	return true;
 }
 
 stock Inventory_SetQuantity(playerid, const item[], quantity)
@@ -153,7 +153,7 @@ stock Inventory_SetQuantity(playerid, const item[], quantity)
 
 	    InventoryData[playerid][itemid][invQuantity] = quantity;
 	}
-	return 1;
+	return true;
 }
 
 stock Inventory_Remove(playerid, const item[], quantity = 1)
@@ -182,9 +182,9 @@ stock Inventory_Remove(playerid, const item[], quantity = 1)
 			format(string, sizeof(string), "UPDATE `inventory` SET `invQuantity` = `invQuantity` - %d WHERE `ID` = '%d' AND `invID` = '%d'", quantity, PlayerData[playerid][pID], InventoryData[playerid][itemid][invID]);
             mysql_tquery(sqlcon, string);
 		}
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 stock Inventory_Add(playerid, const item[], model, quantity = 1)
@@ -224,13 +224,13 @@ stock Inventory_Add(playerid, const item[], model, quantity = 1)
 FUNC::OnInventoryAdd(playerid, itemid)
 {
 	InventoryData[playerid][itemid][invID] = cache_insert_id();
-	return 1;
+	return true;
 }
 
 FUNC::ShowInventory(playerid, targetid)
 {
     if (!IsPlayerConnected(playerid))
-	    return 0;
+	    return false;
 
 	new
 	    items[MAX_INVENTORY],
@@ -253,7 +253,7 @@ FUNC::ShowInventory(playerid, targetid)
 		}
 	}
 	Dialog_Show(playerid, DIALOG_NONE, DIALOG_STYLE_TABLIST_HEADERS, "Inventory Data", str,  "Close", "");
-	return 1;
+	return true;
 
 }
 
@@ -261,7 +261,7 @@ FUNC::ShowInventory(playerid, targetid)
 FUNC::OpenInventory(playerid)
 {
     if (!IsPlayerConnected(playerid))
-	    return 0;
+	    return false;
 
 	new
 	    items[MAX_INVENTORY],
@@ -290,7 +290,7 @@ FUNC::OpenInventory(playerid)
 	{
 	    ShowMessage(playerid, "~r~ERROR ~w~Tidak ada Item apapun di Inventory!", 3);
 	}
-	return 1;
+	return true;
 
 }
 
@@ -313,7 +313,7 @@ FUNC::LoadPlayerItems(playerid)
 			strpack(InventoryData[playerid][i][invItem], name, 32 char);
 		}
 	}
-	return 1;
+	return true;
 }
 
 //==[ Command ]==
@@ -337,5 +337,5 @@ CMD:setitem(playerid, params[])
 		return SendServerMessage(playerid, "You have set %s's \"%s\" to %d.", ReturnName(userid), item, amount);
 	}
 	SendErrorMessage(playerid, "Invalid item name (use /itemlist for a list).");
-	return 1;
+	return true;
 }

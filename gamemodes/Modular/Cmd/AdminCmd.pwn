@@ -11,7 +11,7 @@ CMD:gotoco(playerid, params[])
 		SetPlayerPos(playerid, pos[0], pos[1], pos[2]);
 		SetPlayerInterior(playerid, int);
 	}
-	return 1;
+	return true;
 }
 
 
@@ -34,11 +34,11 @@ CMD:aduty(playerid, params[])
 	    SetPlayerColor(playerid, COLOR_WHITE);
 	    SetPlayerName(playerid, PlayerData[playerid][pName]);
 	}
-	return 1;
+	return true;
 }
 
 CMD:makemeadmin(playerid, params[])
 {
 	PlayerData[playerid][pAdmin] = 7;
-	return 1;
+	return true;
 }

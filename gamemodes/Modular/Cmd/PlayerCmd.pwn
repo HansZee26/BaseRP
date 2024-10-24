@@ -17,7 +17,7 @@ CMD:rentinfo(playerid, params[])
 		Dialog_Show(playerid, DIALOG_NONE, DIALOG_STYLE_TABLIST_HEADERS, "Rental Information", str, "Close", "");
 	else
 		SendErrorMessage(playerid, "Kamu tidak memiliki kendaraan Rental!");
-	return 1;
+	return true;
 }
 
 CMD:help(playerid, params[])
@@ -26,14 +26,14 @@ CMD:help(playerid, params[])
 		return SendErrorMessage(playerid, "You're not spawned!");
 
 	Dialog_Show(playerid, DIALOG_HELP, DIALOG_STYLE_LIST, "Help Menu", "General Commands\nChat Commands\nJob Commands\nFaction Commands\nBusiness Commands\nHouse Commands\nBank Commands\nDealership Commands\nWorkshop Commands\nPrivate Farm Commands", "Select", "Close");
-	return 1;
+	return true;
 }
 
 CMD:inventory(playerid, params[])
 {
 	PlayerData[playerid][pStorageSelect] = 0;
 	OpenInventory(playerid);
-	return 1;
+	return true;
 }
 
 
@@ -81,7 +81,7 @@ CMD:enter(playerid, params[])
 
 			SetCameraBehindPlayer(playerid);
 			PlayerData[playerid][pInHouse] = HouseData[id][houseID];
-			return 1;
+			return true;
 		}
 		if ((id = House_Inside(playerid)) != -1 && IsPlayerInRangeOfPoint(playerid, 2.5, HouseData[id][houseInt][0], HouseData[id][houseInt][1], HouseData[id][houseInt][2]))
 	    {
@@ -93,8 +93,8 @@ CMD:enter(playerid, params[])
 
 			SetCameraBehindPlayer(playerid);
 			PlayerData[playerid][pInHouse] = -1;
-			return 1;
+			return true;
 		}
 	}
-	return 1;
+	return true;
 }

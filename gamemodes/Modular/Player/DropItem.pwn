@@ -43,7 +43,7 @@ FUNC::Dropped_Load()
 		}
 		printf("[DROPITEM] Loaded %d Dropped items from database.", rows);
 	}
-	return 1;
+	return true;
 }
 
 DropItem(const item[], const player[], model, quantity, Float:x, Float:y, Float:z, interior, world, weaponid = 0, ammo = 0)
@@ -81,7 +81,7 @@ DropItem(const item[], const player[], model, quantity, Float:x, Float:y, Float:
 DropPlayerItem(playerid, itemid, quantity = 1)
 {
 	if (itemid == -1 || !InventoryData[playerid][itemid][invExists])
-	    return 0;
+	    return false;
 
     new
 		Float:x,
@@ -100,5 +100,5 @@ DropPlayerItem(playerid, itemid, quantity = 1)
 
 	ApplyAnimation(playerid, "GRENADE", "WEAPON_throwu", 4.1, 0, 0, 0, 0, 0, 1);
  	SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "* %s has dropped a \"%s\".", ReturnName(playerid), string);
-	return 1;
+	return true;
 }

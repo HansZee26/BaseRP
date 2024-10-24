@@ -6,8 +6,10 @@
 
 #include <a_mysql>
 
+#include <YSI_Data\y_iterate>
 #include <YSI_Coding\y_va>
 #include <YSI_Coding\y_timers>
+#include <YSI_Extra\y_inline_timers>
 
 #include <eSelection>
 #include <samp_bcrypt>
@@ -72,12 +74,12 @@ public OnGameModeInit()
 	mysql_tquery(sqlcon, "SELECT * FROM `dropped`", "Dropped_Load", "");
 	mysql_tquery(sqlcon, "SELECT * FROM `rental`", "Rental_Load", "");
 	mysql_tquery(sqlcon, "SELECT * FROM `houses`", "House_Load", "");
-	return 1;
+	return true;
 }
 
 public OnGameModeExit()
 {
-	return 1;
+	return true;
 }
 
 public OnPlayerConnect(playerid)
@@ -90,7 +92,7 @@ public OnPlayerConnect(playerid)
 	SetPlayerCameraLookAt(playerid, 156.2734, -1776.0850, 14.2128);
 	InterpolateCameraLookAt(playerid, 156.2734, -1776.0850, 14.2128, 156.2713, -1776.0797, 14.7078, 5000, CAMERA_MOVE);
 	SetTimerEx("PlayerCheck", 1000, false, "ii", playerid, g_RaceCheck{playerid});
-	return 1;
+	return true;
 }
 
 public OnPlayerDisconnect(playerid, reason)
@@ -98,7 +100,7 @@ public OnPlayerDisconnect(playerid, reason)
 	g_RaceCheck{playerid} ++;
 	UnloadPlayerVehicle(playerid);
 	SaveData(playerid);
-	return 1;
+	return true;
 }
 
 public OnPlayerStateChange(playerid, newstate, oldstate)
@@ -136,7 +138,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		PlayerTextDrawHide(playerid, HEALTHTD[playerid]);
 		DestroyPlayerProgressBar(playerid, FUELBAR[playerid]);
 	}
-	return 1;
+	return true;
 }
 
 public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
@@ -176,13 +178,13 @@ public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
 			Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
 	    }
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_REGISTER(playerid, response, listitem, inputtext[])
 {
 	if(!response)
-		return Kick(playerid);
+		return KickEx(playerid);
 
 	new str[256];
 	format(str, sizeof(str), "{FFFFFF}UCP Account: {00FFFF}%s\n{FFFFFF}Attempts: {00FFFF}%d/5\n{FFFFFF}Create Password: {FF00FF}(Input Below)", GetName(playerid), PlayerData[playerid][pAttempt]);
@@ -195,20 +197,20 @@ Dialog:DIALOG_REGISTER(playerid, response, listitem, inputtext[])
 
 	bcrypt_hash(playerid, "HashPlayerPassword", inputtext, BCRYPT_COST);
 
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_LOGIN(playerid, response, listitem, inputtext[])
 {
 	if(!response)
-		return Kick(playerid);
+		return KickEx(playerid);
 		
 	if(strlen(inputtext) < 1)
 	{
 		new str[256];
 		format(str, sizeof(str), "{FFFFFF}UCP Account: {00FFFF}%s\n{FFFFFF}Attempts: {00FFFF}%d/5\n{FFFFFF}Password: {FF00FF}(Input Below)", GetName(playerid), PlayerData[playerid][pAttempt]);
 		Dialog_Show(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "Login to Xyronite", str, "Login", "Exit");
-		return 1;
+		return true;
 	}
 	new pwQuery[256], hash[BCRYPT_HASH_LENGTH];
 	mysql_format(sqlcon, pwQuery, sizeof(pwQuery), "SELECT Password FROM PlayerUCP WHERE UCP = '%e' LIMIT 1", GetName(playerid));
@@ -218,7 +220,7 @@ Dialog:DIALOG_LOGIN(playerid, response, listitem, inputtext[])
 	
 	bcrypt_verify(playerid, "OnPlayerPasswordChecked", inputtext, hash);
 
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_CHARLIST(playerid, response, listitem, inputtext[])
@@ -236,7 +238,7 @@ Dialog:DIALOG_CHARLIST(playerid, response, listitem, inputtext[])
 		mysql_tquery(sqlcon, cQuery, "LoadCharacterData", "d", playerid);
 		
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_MAKECHAR(playerid, response, listitem, inputtext[])
@@ -255,7 +257,7 @@ Dialog:DIALOG_MAKECHAR(playerid, response, listitem, inputtext[])
 
 		format(PlayerData[playerid][pUCP], 22, GetName(playerid));
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_AGE(playerid, response, listitem, inputtext[])
@@ -275,7 +277,7 @@ Dialog:DIALOG_AGE(playerid, response, listitem, inputtext[])
 	{
 		Dialog_Show(playerid, DIALOG_AGE, DIALOG_STYLE_INPUT, "Character Age", "Please Insert your Character Age", "Continue", "Cancel");
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_ORIGIN(playerid, response, listitem, inputtext[])
@@ -289,7 +291,7 @@ Dialog:DIALOG_ORIGIN(playerid, response, listitem, inputtext[])
 	format(PlayerData[playerid][pOrigin], 32, inputtext);
 	Dialog_Show(playerid, DIALOG_GENDER, DIALOG_STYLE_LIST, "Character Gender", "Male\nFemale", "Continue", "Cancel");
 
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_GENDER(playerid, response, listitem, inputtext[])
@@ -312,7 +314,7 @@ Dialog:DIALOG_GENDER(playerid, response, listitem, inputtext[])
 		SetupPlayerData(playerid);
 		
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_HELP(playerid, response, listitem, inputtext[])
@@ -411,7 +413,7 @@ Dialog:DIALOG_HELP(playerid, response, listitem, inputtext[])
 			Dialog_Show(playerid, DIALOG_HELP_RETURN, DIALOG_STYLE_MSGBOX, "Farm Commands", string, "Back", "");
 		}
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_STREAMER_CONFIG(playerid, response, listitem, inputtext[])
@@ -425,7 +427,7 @@ Dialog:DIALOG_STREAMER_CONFIG(playerid, response, listitem, inputtext[])
 		SendServerMessage(playerid, "You have adjusted maximum streamed object configuration to {FFFF00}%s", confignames[listitem]);
 		Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
 	}
-	return 1;
+	return true;
 }
 
 //Biz
@@ -440,7 +442,7 @@ Dialog:DIALOG_BIZPRICE(playerid, response, listitem, inputtext[])
 	}
 	else cmd_biz(playerid, "menu");
 
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_BIZPROD(playerid, response, listitem, inputtext[])
@@ -454,7 +456,7 @@ Dialog:DIALOG_BIZPROD(playerid, response, listitem, inputtext[])
 	}
 	else cmd_biz(playerid, "menu");
 
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_BIZPRODSET(playerid, response, listitem, inputtext[])
@@ -471,7 +473,7 @@ Dialog:DIALOG_BIZPRODSET(playerid, response, listitem, inputtext[])
 		cmd_biz(playerid, "menu");
 		Business_Save(id);
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_BIZPRICESET(playerid, response, listitem, inputtext[])
@@ -488,7 +490,7 @@ Dialog:DIALOG_BIZPRICESET(playerid, response, listitem, inputtext[])
 		cmd_biz(playerid, "menu");
 		Business_Save(id);
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_BIZMENU(playerid, response, listitem, inputtext[])
@@ -510,7 +512,7 @@ Dialog:DIALOG_BIZMENU(playerid, response, listitem, inputtext[])
 			Dialog_Show(playerid, DIALOG_BIZNAME, DIALOG_STYLE_INPUT, "Business Name", str, "Set", "Close");
 		}
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_BIZBUY(playerid, response, listitem, inputtext[])
@@ -658,7 +660,7 @@ Dialog:DIALOG_BIZBUY(playerid, response, listitem, inputtext[])
 			}
 		}
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_BUYSKINS(playerid, response, listitem, inputtext[])
@@ -677,7 +679,7 @@ Dialog:DIALOG_BUYSKINS(playerid, response, listitem, inputtext[])
 			UpdatePlayerSkin(playerid, g_aFemaleSkins[listitem]);
 		}
 	}
-	return 1;
+	return true;
 }
 
 //Rental
@@ -694,7 +696,7 @@ Dialog:DIALOG_RENTAL(playerid, response, listitem, inputtext[])
 		Dialog_Show(playerid, DIALOG_RENTTIME, DIALOG_STYLE_INPUT, "{FFFFFF}Rental Time", str, "Rental", "Close");
 		PlayerData[playerid][pListitem] = listitem;
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_RENTTIME(playerid, response, listitem, inputtext[])
@@ -709,13 +711,13 @@ Dialog:DIALOG_RENTTIME(playerid, response, listitem, inputtext[])
 			new str[256];
 			format(str, sizeof(str), "{FFFFFF}Berapa jam kamu ingin menggunakan kendaraan Rental ini ?\n{FFFFFF}Maksimal adalah {FFFF00}4 jam\n\n{FFFFFF}Harga per Jam: {009000}$%d", RentData[id][rentPrice][listitem]);
 			Dialog_Show(playerid, DIALOG_RENTTIME, DIALOG_STYLE_INPUT, "{FFFFFF}Rental Time", str, "Rental", "Close");
-			return 1;
+			return true;
 		}
 		GiveMoney(playerid, -RentData[id][rentPrice][slot] * time);
 		SendClientMessageEx(playerid, COLOR_SERVER, "RENTAL: {FFFFFF}Kamu telah menyewa {00FFFF}%s {FFFFFF}untuk %d Jam seharga {009000}$%d", GetVehicleModelName(RentData[id][rentModel][slot]), time, RentData[id][rentPrice][slot] * time);
 		VehicleRental_Create(PlayerData[playerid][pID], RentData[id][rentModel][slot], RentData[id][rentSpawn][0], RentData[id][rentSpawn][1], RentData[id][rentSpawn][2], RentData[id][rentSpawn][3], time*3600, PlayerData[playerid][pRenting]);
 	}
-	return 1;
+	return true;
 }
 
 //Dialog Inventory
@@ -743,7 +745,7 @@ Dialog:DIALOG_DROPITEM(playerid, response, listitem, inputtext[])
 			DropPlayerItem(playerid, itemid, strval(inputtext));
 		}
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_GIVEITEM(playerid, response, listitem, inputtext[])
@@ -770,7 +772,7 @@ Dialog:DIALOG_GIVEITEM(playerid, response, listitem, inputtext[])
 		itemid = PlayerData[playerid][pListitem];
 
 		if (itemid == -1)
-			return 0;
+			return false;
 
 		strunpack(string, InventoryData[playerid][itemid][invItem]);
 
@@ -795,7 +797,7 @@ Dialog:DIALOG_GIVEITEM(playerid, response, listitem, inputtext[])
 			PlayerData[playerid][pTarget] = userid;
 		}
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_GIVEAMOUNT(playerid, response, listitem, inputtext[])
@@ -829,7 +831,7 @@ Dialog:DIALOG_GIVEAMOUNT(playerid, response, listitem, inputtext[])
 		Inventory_Remove(playerid, string, strval(inputtext));
 		//  Log_Write("logs/give_log.txt", "[%s] %s (%s) has given %d %s to %s (%s).", ReturnDate(), ReturnName(playerid), PlayerData[playerid][pIP], strval(inputtext), string, ReturnName(userid, 0), PlayerData[userid][pIP]);
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_INVACTION(playerid, response, listitem, inputtext[])
@@ -880,7 +882,7 @@ Dialog:DIALOG_INVACTION(playerid, response, listitem, inputtext[])
 			}
 		}
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_INVENTORY(playerid, response, listitem, inputtext[])
@@ -902,7 +904,7 @@ Dialog:DIALOG_INVENTORY(playerid, response, listitem, inputtext[])
 			}
 		}
 	}
-	return 1;
+	return true;
 }
 
 //House And Furniture Dialog
@@ -926,7 +928,7 @@ Dialog:DIALOG_FURNITURE_BUY(playerid, response, listitem, inputtext[])
 			ShowModelSelectionMenu(playerid, "Furniture", MODEL_SELECTION_FURNITURE, items, count);
 		}
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_FURNITURE_MENU(playerid, response, listitem, inputtext[])
@@ -965,7 +967,7 @@ Dialog:DIALOG_FURNITURE_MENU(playerid, response, listitem, inputtext[])
 
 		}
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_FURNITURE_LIST(playerid, response, listitem, inputtext[])
@@ -979,7 +981,7 @@ Dialog:DIALOG_FURNITURE_LIST(playerid, response, listitem, inputtext[])
 			Dialog_Show(playerid, DIALOG_FURNITURE_MENU, DIALOG_STYLE_LIST, "Furniture Option(s)", "Remove furniture\nEdit position (click n drag)\nEdit position (click textdraw)", "Select", "Close");
 		}
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_FURNITURE(playerid, response, listitem, inputtext[])
@@ -1028,7 +1030,7 @@ Dialog:DIALOG_FURNITURE(playerid, response, listitem, inputtext[])
 			cmd_house(playerid, "menu");
 		}
 	}
-	return 1;
+	return true;
 }
 
 Dialog:DIALOG_HOUSE_MENU(playerid, response, listitem, inputtext[])
@@ -1044,7 +1046,7 @@ Dialog:DIALOG_HOUSE_MENU(playerid, response, listitem, inputtext[])
 			House_OpenStorage(playerid, House_Inside(playerid));
 		}
 	}
-	return 1;
+	return true;
 }
 
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -1060,7 +1062,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		return cmd_enter(playerid, "");
 	}
-	return 1;
+	return true;
 }
 
 public OnPlayerSpawn(playerid)
@@ -1077,7 +1079,7 @@ public OnPlayerSpawn(playerid)
 		PlayerTextDrawShow(playerid, ENERGYTD[playerid][1]);
 		ENERGYBAR[playerid] = CreatePlayerProgressBar(playerid, 539.000000, 158.000000, 69.500000, 9.000000, 9109759, 100.000000, BAR_DIRECTION_RIGHT);
 	}
-	return 1;
+	return true;
 }
 
 public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
@@ -1114,7 +1116,7 @@ public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, respons
 		PlayerData[playerid][pEditType] = EDIT_NONE;
 
 	}
-	return 1;
+	return true;
 }
 
 
@@ -1128,7 +1130,7 @@ public OnPlayerText(playerid, text[])
 		SetPlayerChatBubble(playerid, text, COLOR_WHITE, 10.0, 3000);
 
 		SendClientMessageEx(PlayerData[playerid][pCalling], COLOR_YELLOW, "(Phone) Caller says: %s", text);
-		return 0;
+		return false;
 	}
 	else
 	{
@@ -1137,7 +1139,7 @@ public OnPlayerText(playerid, text[])
 		ProxDetector(10, playerid, lstr, 0xE6E6E6E6, 0xC8C8C8C8, 0xAAAAAAAA, 0x8C8C8C8C, 0x6E6E6E6E);
 		SetPlayerChatBubble(playerid, text, COLOR_WHITE, 10.0, 3000);
 
-		return 0;
+		return false;
 	}
 }
 
@@ -1199,7 +1201,7 @@ public OnVehicleSpawn(vehicleid)
 			}
 		}
 	}
-	return 1;
+	return true;
 }
 
 /*
@@ -1216,7 +1218,7 @@ ptask EnergyUpdate[30000](playerid)
 	{
 	    PlayerData[playerid][pEnergy]--;
 	}
-	return 1;
+	return true;
 }
 
 task RentalUpdate[1000]()
@@ -1236,7 +1238,7 @@ task RentalUpdate[1000]()
 			}
 		}
 	}
-	return 1;
+	return true;
 }
 
 task VehicleUpdate[50000]()
@@ -1261,7 +1263,7 @@ task VehicleUpdate[50000]()
 			VehicleData[i][vInsuTime] = 0;
 		}
 	}
-	return 1;
+	return true;
 }
 ptask PlayerUpdate[1000](playerid)
 {
@@ -1289,5 +1291,5 @@ ptask PlayerUpdate[1000](playerid)
 			}
 		}
 	}
-	return 1;
+	return true;
 }

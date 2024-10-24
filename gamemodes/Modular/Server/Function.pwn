@@ -461,7 +461,7 @@ stock SendAdminMessage(color, const str[], {Float,_}:...)
   				SendClientMessage(i, color, string);
 			}
 		}
-		return 1;
+		return true;
 	}
 	foreach (new i : Player) if(PlayerData[i][pSpawned])
 	{
@@ -470,7 +470,7 @@ stock SendAdminMessage(color, const str[], {Float,_}:...)
 			SendClientMessage(i, color, str);
 		}
 	}
-	return 1;
+	return true;
 }
 
 
@@ -481,7 +481,7 @@ stock ShowMessage(playerid, const string[], time)//Time in Sec.
 	PlayerTextDrawSetString(playerid, MSGTD[playerid], string);
 	PlayerTextDrawShow(playerid, MSGTD[playerid]);
 	SetTimerEx("HideMessage", validtime, false, "d", playerid);
-	return 1;
+	return true;
 }
 
 FUNC::HideMessage(playerid)
@@ -508,7 +508,7 @@ GiveMoney(playerid, amount)
 {
 	PlayerData[playerid][pMoney] += amount;
 	GivePlayerMoney(playerid, amount);
-	return 1;
+	return true;
 }
 
 stock GetEnergy(playerid)
@@ -563,7 +563,7 @@ stock ShowText(playerid, const text[], time)
 	new str[256];
 	format(str, sizeof(str), "%s", text);
 	GameTextForPlayer(playerid, str, total, 5);
-	return 1;
+	return true;
 }
 
 new static g_arrVehicleNames[][] = {
@@ -604,7 +604,7 @@ GetVehicleModelByName(const name[])
 			return i + 400;
 		}
 	}
-	return 0;
+	return false;
 }
 
 ReturnVehicleModelName(model)
@@ -648,9 +648,9 @@ GetEngineStatus(vehicleid)
 	GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 
 	if(engine != 1)
-		return 0;
+		return false;
 
-	return 1;
+	return true;
 }
 
 
@@ -679,15 +679,17 @@ FormatNumber(number, const prefix[] = "$")
 
 stock KickEx(playerid)
 {
-	SaveData(playerid);
-	SetTimerEx("KickTimer", 1000, false, "d", playerid);
+    if(PlayerData[playerid][pSpawned]) {
+        SaveData(playerid);
+    }
+	
+    inline KickTimer()
+    {
+        Kick(playerid);
+    }
+    Timer_CreateCallback(using inline KickTimer, 200, 1);
+    return true;
 }
-
-FUNC::KickTimer(playerid)
-{
-	Kick(playerid);
-}
-
 
 ReturnName(playerid)
 {
@@ -802,7 +804,7 @@ stock SendNearbyMessage(playerid, Float:radius, color, const str[], {Float,_}:..
   				SendClientMessage(i, color, string);
 			}
 		}
-		return 1;
+		return true;
 	}
 	foreach (new i : Player)
 	{
@@ -811,7 +813,7 @@ stock SendNearbyMessage(playerid, Float:radius, color, const str[], {Float,_}:..
 			SendClientMessage(i, color, str);
 		}
 	}
-	return 1;
+	return true;
 }
 
 stock SendClientMessageEx(playerid, colour, const text[], va_args<>)
@@ -836,13 +838,13 @@ stock CheckAccount(playerid)
 		Dialog_Show(playerid, DIALOG_NONE, DIALOG_STYLE_MSGBOX, "UCP", str, "", "Exit");
 		KickEx(playerid);
 	}
-	return 1;
+	return true;
 }
 
 FUNC::PlayerCheck(playerid, rcc)
 {
 	if(rcc != g_RaceCheck{playerid})
-	    return Kick(playerid);
+	    return KickEx(playerid);
 	    
 	CheckAccount(playerid);
 	return true;
@@ -865,7 +867,7 @@ FUNC::CheckPlayerData(playerid)
 		Dialog_Show(playerid, DIALOG_NONE, DIALOG_STYLE_MSGBOX, "UCP", str, "", "Exit");
 		KickEx(playerid);
 	}
-	return 1;
+	return true;
 }
 
 FUNC::CheckPlayerUCP(playerid)
@@ -883,7 +885,7 @@ FUNC::CheckPlayerUCP(playerid)
 	    format(str, sizeof(str), "{FFFFFF}UCP Account: {00FFFF}%s\n{FFFFFF}Attempts: {00FFFF}%d/5\n{FFFFFF}Create Password: {FF00FF}(Input Below)", GetName(playerid), PlayerData[playerid][pAttempt]);
 		Dialog_Show(playerid, DIALOG_REGISTER, DIALOG_STYLE_PASSWORD, "Register to Xyronite", str, "Register", "Exit");
 	}
-	return 1;
+	return true;
 }
 
 stock SetupPlayerData(playerid)
@@ -891,7 +893,7 @@ stock SetupPlayerData(playerid)
     SetSpawnInfo(playerid, 0, PlayerData[playerid][pSkin], 1642.1681, -2333.3689, 13.5469, 0.0, 0, 0, 0, 0, 0, 0);
     SpawnPlayer(playerid);
     GiveMoney(playerid, 150);
-    return 1;
+    return true;
 }
 
 stock SaveData(playerid)
@@ -921,7 +923,7 @@ stock SaveData(playerid)
 	    mysql_format(sqlcon, query, sizeof(query), "%sWHERE `pID` = %d", query, PlayerData[playerid][pID]);
 		mysql_query(sqlcon, query, true);
 	}
-	return 1;
+	return true;
 }
 
 FUNC::LoadCharacterData(playerid)
@@ -952,7 +954,7 @@ FUNC::LoadCharacterData(playerid)
     SpawnPlayer(playerid);
     SendServerMessage(playerid, "Successfully loaded your characters database!");
     LoadPlayerVehicle(playerid);
-    return 1;
+    return true;
 }
 
 FUNC::HashPlayerPassword(playerid, hashid)
@@ -970,7 +972,7 @@ FUNC::HashPlayerPassword(playerid, hashid)
 
     SendServerMessage(playerid, "Your UCP is successfully registered!");
     CheckAccount(playerid);
-	return 1;
+	return true;
 }
 
 ShowCharacterList(playerid)
@@ -987,7 +989,7 @@ ShowCharacterList(playerid)
 		strcat(name, "< Create Character >");
 
 	Dialog_Show(playerid, DIALOG_CHARLIST, DIALOG_STYLE_LIST, "Character List", name, "Select", "Quit");
-	return 1;
+	return true;
 }
 
 FUNC::LoadCharacter(playerid)
@@ -1001,7 +1003,7 @@ FUNC::LoadCharacter(playerid)
 		cache_get_value_name(i, "Name", PlayerChar[playerid][i]);
 	}
   	ShowCharacterList(playerid);
-  	return 1;
+  	return true;
 }
 
 FUNC::OnPlayerPasswordChecked(playerid, bool:success)
@@ -1015,19 +1017,19 @@ FUNC::OnPlayerPasswordChecked(playerid, bool:success)
 	    {
 		    PlayerData[playerid][pAttempt]++;
 	        Dialog_Show(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "Login to Xyronite", str, "Login", "Exit");
-			return 1;
+			return true;
 		}
 		else
 		{
 		    SendServerMessage(playerid, "Kamu telah salah memasukan password sebanyak {FFFF00}5 kali!");
 		    KickEx(playerid);
-			return 1;
+			return true;
 		}
 	}
 	new query[256];
 	format(query, sizeof(query), "SELECT `Name` FROM `characters` WHERE `UCP` = '%s' LIMIT %d;", GetName(playerid), MAX_CHARS);
 	mysql_tquery(sqlcon, query, "LoadCharacter", "d", playerid);
-	return 1;
+	return true;
 }
 
 
@@ -1048,7 +1050,7 @@ FUNC::InsertPlayerName(playerid, const name[])
 		format(PlayerData[playerid][pName], MAX_PLAYER_NAME, name);
 	 	Dialog_Show(playerid, DIALOG_AGE, DIALOG_STYLE_INPUT, "Character Age", "Please Insert your Character Age", "Continue", "Cancel");
 	}
-	return 1;
+	return true;
 }
 
 stock IsEngineVehicle(vehicleid)
@@ -1069,7 +1071,7 @@ stock IsEngineVehicle(vehicleid)
     new modelid = GetVehicleModel(vehicleid);
 
     if (modelid < 400 || modelid > 611)
-        return 0;
+        return false;
 
     return (g_aEngineStatus[modelid - 400]);
 }
@@ -1077,9 +1079,9 @@ stock IsEngineVehicle(vehicleid)
 stock IsSpeedoVehicle(vehicleid)
 {
 	if (GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510 || GetVehicleModel(vehicleid) == 481 || !IsEngineVehicle(vehicleid)) {
-	    return 0;
+	    return false;
 	}
-	return 1;
+	return true;
 }
 
 FUNC::EngineStatus(playerid, vehicleid)
@@ -1103,7 +1105,7 @@ FUNC::EngineStatus(playerid, vehicleid)
 		ShowText(playerid, "Engine turned ~r~OFF", 3);
 		SwitchVehicleLight(vehicleid, false);
 	}
-	return 1;
+	return true;
 }
 
 stock ResetVariable(playerid)
@@ -1121,7 +1123,7 @@ stock ResetVariable(playerid)
 	PlayerData[playerid][pAttempt] = 0;
 	PlayerData[playerid][pCalling] = INVALID_PLAYER_ID;
 	PlayerData[playerid][pSpawned] = false;
-	return 1;
+	return true;
 }
 
 ProxDetector(Float: f_Radius, playerid, const string[],col1,col2,col3,col4,col5)
@@ -1152,5 +1154,5 @@ ProxDetector(Float: f_Radius, playerid, const string[],col1,col2,col3,col4,col5)
 			}
 			else SendClientMessage(i, col1, string);
 		}
-		return 1;
+		return true;
 }

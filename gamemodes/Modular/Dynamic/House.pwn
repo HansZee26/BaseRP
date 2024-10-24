@@ -336,7 +336,7 @@ stock House_WeaponStorage(playerid, houseid)
 			format(string, sizeof(string), "%s%s ({FFFF00}Ammo: %d{FFFFFF}) ({00FFFF}Durability: %d{FFFFFF})\n", string, ReturnWeaponName(HouseData[houseid][houseWeapons][i]), HouseData[houseid][houseAmmo][i], HouseData[houseid][houseDurability][i]);
 	}
 	Dialog_Show(playerid, DIALOG_HOUSEWEAPON, DIALOG_STYLE_LIST, "Weapon Storage", string, "Select", "Cancel");
-	return 1;
+	return true;
 }
 
 stock House_OpenStorage(playerid, houseid)
@@ -355,14 +355,14 @@ stock House_OpenStorage(playerid, houseid)
 	}
  	format(string, sizeof(string), "Item Storage (%d/%d)\nWeapon Storage (%d/10)", items[0], MAX_HOUSE_STORAGE, items[1]);
 	Dialog_Show(playerid, DIALOG_HOUSESTORAGE, DIALOG_STYLE_LIST, "House Storage", string, "Select", "Cancel");
-	return 1;
+	return true;
 }
 
 
 stock House_ShowItems(playerid, houseid)
 {
     if (houseid == -1 || !HouseData[houseid][houseExists])
-	    return 0;
+	    return false;
 
 	static
 	    string[MAX_HOUSE_STORAGE * 32],
@@ -387,13 +387,13 @@ stock House_ShowItems(playerid, houseid)
 		}
 	}
 	Dialog_Show(playerid, DIALOG_HOUSEITEM, DIALOG_STYLE_LIST, "Item Storage", string, "Select", "Cancel");
-	return 1;
+	return true;
 }
 
 stock House_GetItemID(houseid, const item[])
 {
 	if (houseid == -1 || !HouseData[houseid][houseExists])
-	    return 0;
+	    return false;
 
 	for (new i = 0; i < MAX_HOUSE_STORAGE; i ++)
 	{
@@ -408,7 +408,7 @@ stock House_GetItemID(houseid, const item[])
 stock House_GetFreeID(houseid)
 {
 	if (houseid == -1 || !HouseData[houseid][houseExists])
-	    return 0;
+	    return false;
 
 	for (new i = 0; i < MAX_HOUSE_STORAGE; i ++)
 	{
@@ -421,7 +421,7 @@ stock House_GetFreeID(houseid)
 stock House_AddItem(houseid, const item[], model, quantity = 1, slotid = -1)
 {
     if (houseid == -1 || !HouseData[houseid][houseExists])
-	    return 0;
+	    return false;
 
 	new
 		itemid = House_GetItemID(houseid, item),
@@ -462,13 +462,13 @@ stock House_AddItem(houseid, const item[], model, quantity = 1, slotid = -1)
 FUNC::OnStorageAdd(houseid, itemid)
 {
 	HouseStorage[houseid][itemid][hItemID] = cache_insert_id();
-	return 1;
+	return true;
 }
 
 stock House_RemoveItem(houseid, const item[], quantity = 1)
 {
     if (houseid == -1 || !HouseData[houseid][houseExists])
-	    return 0;
+	    return false;
 
 	new
 		itemid = House_GetItemID(houseid, item),
@@ -494,9 +494,9 @@ stock House_RemoveItem(houseid, const item[], quantity = 1)
 			mysql_format(sqlcon, string, sizeof(string), "UPDATE `housestorage` SET `itemQuantity` = `itemQuantity` - %d WHERE `ID` = '%d' AND `itemID` = '%d'", quantity, HouseData[houseid][houseID], HouseStorage[houseid][itemid][hItemID]);
             mysql_tquery(sqlcon, string);
 		}
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 stock House_Inside(playerid)
@@ -525,18 +525,18 @@ stock HousePark_Nearest(playerid)
 	{
 		return i;
 	}
-	return 1;
+	return true;
 }
 
 stock House_IsOwner(playerid, houseid)
 {
 	if (PlayerData[playerid][pID] == -1)
-	    return 0;
+	    return false;
 
     if (HouseData[houseid][houseOwner] != 0 && HouseData[houseid][houseOwner] == PlayerData[playerid][pID])
-		return 1;
+		return true;
 
-	return 0;
+	return false;
 }
 
 stock House_Spawn(i)
@@ -560,7 +560,7 @@ stock House_Spawn(i)
 		HouseData[i][houseIcon] = CreateDynamicMapIcon(HouseData[i][housePos][0], HouseData[i][housePos][1], HouseData[i][housePos][2], 32, -1, -1, -1, -1, 15.0);
 	}
 	HouseData[i][houseCP] = CreateDynamicCP(HouseData[i][housePos][0], HouseData[i][housePos][1], HouseData[i][housePos][2], 1.0, -1, -1, -1, 2.0);
-	return 1;
+	return true;
 }
 stock House_Create(playerid, price, type)
 {
@@ -680,12 +680,12 @@ stock House_CountVehicle(id)
 FUNC::OnHouseCreated(houseid)
 {
 	if (houseid == -1 || !HouseData[houseid][houseExists])
-	    return 0;
+	    return false;
 
 	HouseData[houseid][houseID] = cache_insert_id();
 	House_Save(houseid);
 
-	return 1;
+	return true;
 }
 
 FUNC::OnLoadFurniture(houseid)
@@ -717,7 +717,7 @@ FUNC::OnLoadFurniture(houseid)
 
 	    Furniture_Spawn(id);
 	}
-	return 1;
+	return true;
 }
 stock GetFurnitureNameByModel(model)
 {
@@ -776,7 +776,7 @@ stock Furniture_Spawn(furnitureid)
 			HouseData[FurnitureData[furnitureid][furnitureHouse]][houseInterior]	
 		);	
 	}
-	return 1;
+	return true;
 }
 
 stock Furniture_Refresh(furnitureid)
@@ -791,7 +791,7 @@ stock Furniture_Refresh(furnitureid)
 		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, FurnitureData[furnitureid][furnitureObject], E_STREAMER_R_Y, FurnitureData[furnitureid][furnitureRot][1]);
 		Streamer_SetFloatData(STREAMER_TYPE_OBJECT, FurnitureData[furnitureid][furnitureObject], E_STREAMER_R_Z, FurnitureData[furnitureid][furnitureRot][2]);
 	}
-	return 1;
+	return true;
 }
 
 stock Furniture_Save(furnitureid)
@@ -821,7 +821,7 @@ stock Furniture_Add(houseid, const name[], modelid, Float:x, Float:y, Float:z, F
 		id = -1;
 
  	if (!Iter_Contains(House, houseid))
-	    return 0;
+	    return false;
 
 	id = Iter_Free(Furniture);
 
@@ -861,7 +861,7 @@ FUNC::OnFurnitureCreated(furnitureid)
 {
 	FurnitureData[furnitureid][furnitureID] = cache_insert_id();
 	Furniture_Save(furnitureid);
-	return 1;
+	return true;
 }
 stock Furniture_Delete(furnitureid)
 {
@@ -881,7 +881,7 @@ stock Furniture_Delete(furnitureid)
 
 		Iter_Remove(Furniture, furnitureid);
 	}
-	return 1;
+	return true;
 }
 
 
@@ -948,7 +948,7 @@ FUNC::House_Load()
 		mysql_format(sqlcon, str, sizeof(str), "SELECT * FROM `housestorage` WHERE `ID` = '%d'", HouseData[i][houseID]);
 		mysql_tquery(sqlcon, str, "OnLoadStorage", "d", i);
 	}
-	return 1;
+	return true;
 }
 
 FUNC::OnLoadStorage(houseid)
@@ -970,7 +970,7 @@ FUNC::OnLoadStorage(houseid)
 			strpack(HouseStorage[houseid][i][hItemName], str, 32 char);
 		}
 	}
-	return 1;
+	return true;
 }
 stock House_Refresh(houseid)
 {
@@ -1015,7 +1015,7 @@ stock House_Refresh(houseid)
 
 		Streamer_SetPosition(STREAMER_TYPE_MAP_ICON, HouseData[houseid][houseIcon], HouseData[houseid][housePos][0], HouseData[houseid][housePos][1], HouseData[houseid][housePos][2]);
 	}
-	return 1;
+	return true;
 }
 
 stock House_Delete(houseid)
@@ -1064,7 +1064,7 @@ stock House_Delete(houseid)
 	    HouseData[houseid][houseID] = 0;
 	    Iter_Remove(House, houseid);
 	}
-	return 1;
+	return true;
 }
 
 stock House_GetCount(playerid)
@@ -1093,7 +1093,7 @@ CMD:house(playerid, params[])
 	{
 	    SendSyntaxMessage(playerid, "/house [name]");
 	    SendClientMessage(playerid, COLOR_SERVER, "Names:{FFFFFF} buy, lock, menu, park");
-	    return 1;
+	    return true;
 	}	
 	if(!strcmp(type, "buy", true))
 	{
@@ -1145,7 +1145,7 @@ CMD:house(playerid, params[])
 				ShowMessage(playerid, "You've ~g~unlocked ~w~the house", 3);
 				PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
 			}
-			return 1;
+			return true;
 		}
 		else if ((id = House_Inside(playerid)) != -1 && House_IsOwner(playerid, id) && IsPlayerInRangeOfPoint(playerid, 2.5, HouseData[id][houseInt][0], HouseData[id][houseInt][1], HouseData[id][houseInt][2]))
 	    {
@@ -1165,7 +1165,7 @@ CMD:house(playerid, params[])
 				ShowMessage(playerid, "You've ~g~unlocked ~w~the house", 3);
 				PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
 			}
-			return 1;
+			return true;
 		}
 	}
 	else if(!strcmp(type, "menu", true))
@@ -1179,7 +1179,7 @@ CMD:house(playerid, params[])
 
 		Dialog_Show(playerid, DIALOG_HOUSE_MENU, DIALOG_STYLE_LIST, "House Menu", "Furniture\nStorage", "Select", "Close");
 	}
-	return 1;
+	return true;
 }
 
 CMD:edithouse(playerid, params[])
@@ -1196,7 +1196,7 @@ CMD:edithouse(playerid, params[])
  	{
 	 	SendSyntaxMessage(playerid, "/edithouse [id] [names]");
 	    SendClientMessage(playerid, COLOR_YELLOW, "Names:{FFFFFF} location, interior, price, parkslot, parkpos, asell");
-		return 1;
+		return true;
 	}
 	if (!Iter_Contains(House, id))
 	    return SendErrorMessage(playerid, "You have specified an invalid house ID.");
@@ -1284,7 +1284,7 @@ CMD:edithouse(playerid, params[])
 		House_Save(id);
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has aselled house ID: %d", PlayerData[playerid][pUCP], id);
 	}
-	return 1;
+	return true;
 }
 
 CMD:createhouse(playerid, params[])
@@ -1309,7 +1309,7 @@ CMD:createhouse(playerid, params[])
 	    return SendErrorMessage(playerid, "You can't add more Houses!");
 
 	SendServerMessage(playerid, "You have successfully created house ID: %d.", id);
-	return 1;
+	return true;
 }
 
 CMD:destroyhouse(playerid, params[])
@@ -1328,5 +1328,5 @@ CMD:destroyhouse(playerid, params[])
 
 	House_Delete(id);
 	SendServerMessage(playerid, "You have successfully destroyed house ID: %d.", id);
-	return 1;
+	return true;
 }

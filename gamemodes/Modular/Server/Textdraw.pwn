@@ -485,7 +485,7 @@ stock ShowEditTextDraw(playerid)
 	PlayerTextDrawShow(playerid, MINRZ[playerid]);
 	PlayerTextDrawShow(playerid, FINISHEDIT[playerid]);
 	SelectTextDraw(playerid, COLOR_YELLOW);
-	return 1;
+	return true;
 }
 
 stock HideEditTextDraw(playerid)
@@ -508,5 +508,5 @@ stock HideEditTextDraw(playerid)
 	PlayerTextDrawHide(playerid, MINRZ[playerid]);
 	PlayerTextDrawHide(playerid, FINISHEDIT[playerid]);
 	CancelSelectTextDraw(playerid);
-	return 1;
+	return true;
 }
