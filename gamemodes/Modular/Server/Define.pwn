@@ -1,4 +1,7 @@
 /* Define & Macro */
+#define SERVER_NAME 	 "Base RolePlay"
+#define SERVER_URL 		 "baserp.id"
+#define SERVER_REVISION  "B:RP 0.1.1 Coolest"
 
 #define forex(%0,%1) for(new %0 = 0; %0 < %1; %0++)
 
@@ -19,12 +22,8 @@
 #define DATABASE_PASSWORD "" //Change this to your database password
 #define DATABASE_NAME "basic"
 
-#if !defined BCRYPT_HASH_LENGTH
-	#define BCRYPT_HASH_LENGTH 250
-#endif
-
 #if !defined BCRYPT_COST
-	#define BCRYPT_COST 12
+	#define BCRYPT_COST 14
 #endif
 
 #define SendServerMessage(%0,%1) \

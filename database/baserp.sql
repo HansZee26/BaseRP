@@ -132,21 +132,14 @@ CREATE TABLE `inventory` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `playerucp`
+-- Table structure for table `accounts`
 --
 
-CREATE TABLE `playerucp` (
+CREATE TABLE `accounts` (
   `ID` int(12) NOT NULL,
   `UCP` varchar(22) NOT NULL,
   `Password` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `playerucp`
---
-
-INSERT INTO `playerucp` (`ID`, `UCP`, `Password`) VALUES
-(8, 'pen1z', '$2y$12$SnZC7tPO9yiduA7oojwD6u3HulwkjeUb4qLTqO1qCvzxJ8mIDaBOW');
 
 -- --------------------------------------------------------
 
@@ -230,9 +223,9 @@ ALTER TABLE `inventory`
   ADD PRIMARY KEY (`invID`);
 
 --
--- Indexes for table `playerucp`
+-- Indexes for table `accounts`
 --
-ALTER TABLE `playerucp`
+ALTER TABLE `accounts`
   ADD PRIMARY KEY (`ID`);
 
 --
@@ -276,9 +269,9 @@ ALTER TABLE `inventory`
   MODIFY `invID` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1209;
 
 --
--- AUTO_INCREMENT for table `playerucp`
+-- AUTO_INCREMENT for table `accounts`
 --
-ALTER TABLE `playerucp`
+ALTER TABLE `accounts`
   MODIFY `ID` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --

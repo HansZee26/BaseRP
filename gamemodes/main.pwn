@@ -1,5 +1,7 @@
 /* Includes */
 #include <a_samp>
+#define SSCANF_NO_NICE_FEATURES
+#define YSI_NO_HEAP_MALLOC
 
 #include <sscanf2>
 #include <streamer>
@@ -11,12 +13,12 @@
 #include <YSI_Coding\y_timers>
 #include <YSI_Extra\y_inline_timers>
 
+#include <easyDialog>
 #include <eSelection>
 #include <samp_bcrypt>
 #include <izcmd>
 #include <EVF2>
 #include <progress2>
-#include <easyDialog>
 #include <PreviewModelDialog2>
 #include <strlib>
 
@@ -51,14 +53,16 @@
 
 /* Gamemode Start! */
 
-main()
-{
-	print("[ Xyronite Gamemode Loaded ]");
-}
+main(){}
 
 public OnGameModeInit()
 {
 	Database_Connect();
+
+	SendRconCommand(va_return("hostname %s", SERVER_NAME));
+	SendRconCommand(va_return("weburl %s", SERVER_URL));
+	SetGameModeText(SERVER_REVISION);
+
 	CreateGlobalTextDraw();
 	DisableInteriorEnterExits();
 	EnableStuntBonusForAll(0);
@@ -85,13 +89,27 @@ public OnGameModeExit()
 public OnPlayerConnect(playerid)
 {
 	g_RaceCheck{playerid} ++;
+
 	ResetVariable(playerid);
+
 	CreatePlayerHUD(playerid);
-	SetPlayerPos(playerid, 155.3337, -1776.4384, 14.8978+5.0);
-	SetPlayerCameraPos(playerid, 155.3337, -1776.4384, 14.8978);
-	SetPlayerCameraLookAt(playerid, 156.2734, -1776.0850, 14.2128);
-	InterpolateCameraLookAt(playerid, 156.2734, -1776.0850, 14.2128, 156.2713, -1776.0797, 14.7078, 5000, CAMERA_MOVE);
-	SetTimerEx("PlayerCheck", 1000, false, "ii", playerid, g_RaceCheck{playerid});
+	return true;
+}
+
+public OnPlayerRequestClass(playerid, classid)
+{
+    if (IsPlayerNPC(playerid))
+	    return true;
+
+	if (!PlayerData[playerid][pAccount] && !PlayerData[playerid][pKicked])
+	{
+	    PlayerData[playerid][pAccount] = true;
+	    TogglePlayerSpectating(playerid, 1);
+
+		SetPlayerColor(playerid, 0xFFFFFFFF);
+		SetCameraData(playerid);
+		CheckAccount(playerid);
+	}
 	return true;
 }
 
@@ -100,6 +118,14 @@ public OnPlayerDisconnect(playerid, reason)
 	g_RaceCheck{playerid} ++;
 	UnloadPlayerVehicle(playerid);
 	SaveData(playerid);
+	return true;
+}
+
+public OnPlayerUpdate(playerid)
+{
+	if (PlayerData[playerid][pKicked])
+		return false;
+
 	return true;
 }
 
@@ -213,7 +239,7 @@ Dialog:DIALOG_LOGIN(playerid, response, listitem, inputtext[])
 		return true;
 	}
 	new pwQuery[256], hash[BCRYPT_HASH_LENGTH];
-	mysql_format(sqlcon, pwQuery, sizeof(pwQuery), "SELECT Password FROM PlayerUCP WHERE UCP = '%e' LIMIT 1", GetName(playerid));
+	mysql_format(sqlcon, pwQuery, sizeof(pwQuery), "SELECT Password FROM accounts WHERE UCP = '%e' LIMIT 1", GetName(playerid));
 	mysql_query(sqlcon, pwQuery);
 	
 	cache_get_value_name(0, "Password", hash, sizeof(hash));

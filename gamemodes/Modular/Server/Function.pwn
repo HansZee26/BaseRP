@@ -1,4 +1,46 @@
 /* Functions */
+stock SetCameraData(playerid)
+{
+	new randcamera = Random(1,5);
+	switch(randcamera)
+	{
+		case 1: // mall
+		{
+		    SetPlayerPos(playerid, 1167.21, -1374.89, 18.35);
+   			InterpolateCameraPos(playerid, 1207.073242, -1284.409545, 26.723211, 1168.601806, -1373.938842, 41.528285, 50000, CAMERA_MOVE);
+			InterpolateCameraLookAt(playerid, 1203.937988, -1288.107666, 25.500940, 1165.563476, -1377.385620, 39.556453, 50000, CAMERA_MOVE);
+			Streamer_UpdateEx(playerid, 1165.563476, -1377.385620, 39.556453);
+  		}
+  		case 2: // mall2
+		{
+		    SetPlayerPos(playerid,1079.88, -1383.14, 14.83);
+   			InterpolateCameraPos(playerid, 1128.499389, -1404.495605, 18.335790, 1077.408203, -1382.365112, 20.641353, 50000, CAMERA_MOVE);
+			InterpolateCameraLookAt(playerid, 1128.462280, -1409.475830, 17.893693, 1081.667114, -1384.892944, 19.954660, 50000, CAMERA_MOVE);
+			Streamer_UpdateEx(playerid, 1081.667114, -1384.892944, 19.954660);
+  		}
+  		case 3: // CH
+		{
+		    SetPlayerPos(playerid, 1495.18, -1702.48, 8.67);
+   			InterpolateCameraPos(playerid, 1515.818725, -1641.488525, 24.869533, 1436.013793, -1721.987915, 37.181129, 50000, CAMERA_MOVE);
+			InterpolateCameraLookAt(playerid, 1519.533447, -1644.715576, 23.982011, 1439.808471, -1724.678588, 35.347877, 50000, CAMERA_MOVE);
+			Streamer_UpdateEx(playerid, 1439.808471, -1724.678588, 35.347877);
+  		}
+  		case 4: // beach
+		{
+		    SetPlayerPos(playerid, 397.15, -2054.82, 8.05);
+   			InterpolateCameraPos(playerid, 883.080078, -2073.972656, 25.075428, 411.643768, -2055.816650, 21.657363, 50000, CAMERA_MOVE);
+			InterpolateCameraLookAt(playerid, 879.102966, -2070.963378, 24.718688, 409.557373, -2051.275390, 21.503726, 50000, CAMERA_MOVE);
+			Streamer_UpdateEx(playerid, 409.557373, -2051.275390, 21.503726);
+  		}
+  		case 5: // city
+		{
+		    SetPlayerPos(playerid, 1553.62, -1356.79, 267.25);
+   			InterpolateCameraPos(playerid, 1310.625732, -1368.771728, 133.428985, 1589.414184, -1384.362792, 352.946289, 50000, CAMERA_MOVE);
+			InterpolateCameraLookAt(playerid, 1315.341552, -1367.147094, 133.778137, 1586.835327, -1380.888061, 350.441131, 50000, CAMERA_MOVE);
+			Streamer_UpdateEx(playerid, 1586.835327, -1380.888061, 350.441131);
+  		}
+	}
+}
 
 stock GetElapsedTime(time, &hours, &minutes, &seconds)
 {
@@ -679,15 +721,14 @@ FormatNumber(number, const prefix[] = "$")
 
 stock KickEx(playerid)
 {
+    if (PlayerData[playerid][pKicked])
+	    return false;
+        
+    PlayerData[playerid][pKicked] = true;
+
     if(PlayerData[playerid][pSpawned]) {
         SaveData(playerid);
     }
-	
-    inline KickTimer()
-    {
-        Kick(playerid);
-    }
-    Timer_CreateCallback(using inline KickTimer, 200, 1);
     return true;
 }
 
@@ -720,18 +761,32 @@ stock GetName(playerid)
 
 Database_Connect()
 {
-	sqlcon = mysql_connect(DATABASE_ADDRESS,DATABASE_USERNAME,DATABASE_PASSWORD,DATABASE_NAME);
+	mysql_log(ERROR | WARNING);
+    sqlcon = mysql_connect_file("mysql.ini");
 
-	if(mysql_errno(sqlcon) != 0)
-	{
-	    print("[MySQL] - Connection Failed!");
-	    SetGameModeText("Xyronite | Connection Failed!");
-	}
-	else
-	{
-		print("[MySQL] - Connection Estabilished!");
-		SetGameModeText("Xyronite | UCP System");
-	}
+    if(mysql_errno(sqlcon) != 0) {
+        SendRconCommand("password lk&iu&sds7*)");
+
+        new error[128];
+        mysql_error(error, sizeof(error), sqlcon);
+        printf("[Database] Connection failed! Error: [%d] %s", mysql_errno(sqlcon), error);
+        mysql_close();
+    }
+    else
+    {
+        new textLines[][] = {
+            "## Credits:",
+            "* Luminouz for BaseRP and Xyronite",
+            "* WisnuYundo for last update another feature",
+            "* Flamesidgs for continue update"
+        };
+
+        for(new i = 0; i < sizeof(textLines); i++)
+        {
+            printf(textLines[i]);
+        }
+        printf("[Database] Connection passed!");
+    }
 }
 
 stock IsRoleplayName(const name[]) {
@@ -829,7 +884,7 @@ stock CheckAccount(playerid)
 	new str[256];
 	if(strfind(GetName(playerid), "_") == -1)
 	{
-		format(query, sizeof(query), "SELECT * FROM `PlayerUCP` WHERE `UCP` = '%s' LIMIT 1;", GetName(playerid));
+		format(query, sizeof(query), "SELECT * FROM `accounts` WHERE `UCP` = '%s' LIMIT 1;", GetName(playerid));
 		mysql_tquery(sqlcon, query, "CheckPlayerUCP", "d", playerid);
 	}
 	else
@@ -838,15 +893,6 @@ stock CheckAccount(playerid)
 		Dialog_Show(playerid, DIALOG_NONE, DIALOG_STYLE_MSGBOX, "UCP", str, "", "Exit");
 		KickEx(playerid);
 	}
-	return true;
-}
-
-FUNC::PlayerCheck(playerid, rcc)
-{
-	if(rcc != g_RaceCheck{playerid})
-	    return KickEx(playerid);
-	    
-	CheckAccount(playerid);
 	return true;
 }
 
@@ -870,8 +916,11 @@ FUNC::CheckPlayerData(playerid)
 	return true;
 }
 
-FUNC::CheckPlayerUCP(playerid)
+FUNC::CheckPlayerUCP(playerid, rcc)
 {
+	if(rcc != g_RaceCheck{playerid})
+	    return KickEx(playerid);
+        
 	new rows = cache_num_rows();
 	new str[256];
 	if (rows)
@@ -967,7 +1016,7 @@ FUNC::HashPlayerPassword(playerid, hashid)
 
 	GetPlayerName(playerid, tempUCP[playerid], MAX_PLAYER_NAME + 1);
 
-	format(query,sizeof(query),"INSERT INTO `PlayerUCP` (`UCP`, `Password`) VALUES ('%s', '%s')", tempUCP[playerid], hash);
+	format(query,sizeof(query),"INSERT INTO `accounts` (`UCP`, `Password`) VALUES ('%s', '%s')", tempUCP[playerid], hash);
 	mysql_tquery(sqlcon, query);
 
     SendServerMessage(playerid, "Your UCP is successfully registered!");
@@ -1122,7 +1171,9 @@ stock ResetVariable(playerid)
 	PlayerData[playerid][pListitem] = -1;
 	PlayerData[playerid][pAttempt] = 0;
 	PlayerData[playerid][pCalling] = INVALID_PLAYER_ID;
-	PlayerData[playerid][pSpawned] = false;
+	PlayerData[playerid][pAccount] = false;
+    PlayerData[playerid][pKicked] = false;
+    PlayerData[playerid][pSpawned] = false;
 	return true;
 }
 

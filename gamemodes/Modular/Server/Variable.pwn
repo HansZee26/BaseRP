@@ -33,6 +33,7 @@ new g_aFemaleSkins[] = {
 enum e_player_data
 {
 	pID,
+	bool:pAccount,
 	bool:pKicked,
 	pUCP[22],
 	pName[MAX_PLAYER_NAME],
