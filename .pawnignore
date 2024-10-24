@@ -1,0 +1,12 @@
+// Usage: Right click on a file or a folder in your workspace to add into .pawnignore
+// Explanation: This way you'll tell extension not to parse these files for auto-complete and intellisense.  
+// If you are having problems, please report issue at https://github.com/openmultiplayer/vscode-pawn/issues
+
+plugins
+log-core2.dll
+log-core.dll
+libmariadb.dll
+announce.exe
+samp-npc.exe
+samp-server.exe
+server.cfg
