@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 10, 2021 at 03:39 PM
--- Server version: 10.4.18-MariaDB
--- PHP Version: 8.0.3
+-- Generation Time: Oct 24, 2024 at 07:39 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,8 +18,20 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `xyronite`
+-- Database: `baserp`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `accounts`
+--
+
+CREATE TABLE `accounts` (
+  `ID` int(12) NOT NULL,
+  `UCP` varchar(22) NOT NULL,
+  `Password` varchar(60) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -59,7 +71,7 @@ CREATE TABLE `business` (
   `bizProdName5` varchar(24) NOT NULL DEFAULT 'None',
   `bizProdName6` varchar(24) NOT NULL DEFAULT 'None',
   `bizProdName7` varchar(24) NOT NULL DEFAULT 'None'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -85,7 +97,7 @@ CREATE TABLE `characters` (
   `AdminLevel` int(5) NOT NULL DEFAULT 0,
   `InBiz` int(8) NOT NULL DEFAULT 0,
   `Money` int(12) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `characters`
@@ -113,7 +125,102 @@ CREATE TABLE `dropped` (
   `itemAmmo` int(12) DEFAULT 0,
   `itemWeapon` int(12) DEFAULT 0,
   `itemPlayer` varchar(24) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `furniture`
+--
+
+CREATE TABLE `furniture` (
+  `ID` int(12) DEFAULT 0,
+  `furnitureID` int(12) NOT NULL,
+  `furnitureName` varchar(32) DEFAULT NULL,
+  `furnitureModel` int(12) DEFAULT 0,
+  `furnitureX` float DEFAULT 0,
+  `furnitureY` float DEFAULT 0,
+  `furnitureZ` float DEFAULT 0,
+  `furnitureRX` float DEFAULT 0,
+  `furnitureRY` float DEFAULT 0,
+  `furnitureRZ` float DEFAULT 0,
+  `furnitureType` int(12) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `houses`
+--
+
+CREATE TABLE `houses` (
+  `houseID` int(12) NOT NULL,
+  `houseOwner` int(12) DEFAULT 0,
+  `housePrice` int(12) DEFAULT 0,
+  `houseAddress` varchar(32) DEFAULT NULL,
+  `housePosX` float DEFAULT 0,
+  `housePosY` float DEFAULT 0,
+  `housePosZ` float DEFAULT 0,
+  `housePosA` float DEFAULT 0,
+  `houseIntX` float DEFAULT 0,
+  `houseIntY` float DEFAULT 0,
+  `houseIntZ` float DEFAULT 0,
+  `houseIntA` float DEFAULT 0,
+  `houseInterior` int(12) DEFAULT 0,
+  `houseExterior` int(12) DEFAULT 0,
+  `houseExteriorVW` int(12) DEFAULT 0,
+  `houseLocked` int(4) DEFAULT 0,
+  `houseWeapon1` int(12) DEFAULT 0,
+  `houseAmmo1` int(12) DEFAULT 0,
+  `houseWeapon2` int(12) DEFAULT 0,
+  `houseAmmo2` int(12) DEFAULT 0,
+  `houseWeapon3` int(12) DEFAULT 0,
+  `houseAmmo3` int(12) DEFAULT 0,
+  `houseWeapon4` int(12) DEFAULT 0,
+  `houseAmmo4` int(12) DEFAULT 0,
+  `houseWeapon5` int(12) DEFAULT 0,
+  `houseAmmo5` int(12) DEFAULT 0,
+  `houseWeapon6` int(12) DEFAULT 0,
+  `houseAmmo6` int(12) DEFAULT 0,
+  `houseWeapon7` int(12) DEFAULT 0,
+  `houseAmmo7` int(12) DEFAULT 0,
+  `houseWeapon8` int(12) DEFAULT 0,
+  `houseAmmo8` int(12) DEFAULT 0,
+  `houseWeapon9` int(12) DEFAULT 0,
+  `houseAmmo9` int(12) DEFAULT 0,
+  `houseWeapon10` int(12) DEFAULT 0,
+  `houseAmmo10` int(12) DEFAULT 0,
+  `houseMoney` int(12) DEFAULT 0,
+  `houseOwnerName` varchar(32) NOT NULL,
+  `houseDurability1` int(11) NOT NULL DEFAULT 0,
+  `houseDurability2` int(11) NOT NULL DEFAULT 0,
+  `houseDurability3` int(11) NOT NULL DEFAULT 0,
+  `houseDurability4` int(11) NOT NULL DEFAULT 0,
+  `houseDurability5` int(11) NOT NULL DEFAULT 0,
+  `houseDurability6` int(11) NOT NULL DEFAULT 0,
+  `houseDurability7` int(11) NOT NULL DEFAULT 0,
+  `houseDurability8` int(11) NOT NULL DEFAULT 0,
+  `houseDurability9` int(11) NOT NULL DEFAULT 0,
+  `houseDurability10` int(11) NOT NULL DEFAULT 0,
+  `housePark` int(3) NOT NULL DEFAULT 0,
+  `houseParkX` float NOT NULL DEFAULT 0,
+  `houseParkY` float NOT NULL DEFAULT 0,
+  `houseParkZ` float NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `housestorage`
+--
+
+CREATE TABLE `housestorage` (
+  `ID` int(12) DEFAULT 0,
+  `itemID` int(12) NOT NULL,
+  `itemName` varchar(32) DEFAULT NULL,
+  `itemModel` int(12) DEFAULT 0,
+  `itemQuantity` int(12) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -127,19 +234,7 @@ CREATE TABLE `inventory` (
   `invItem` varchar(32) DEFAULT NULL,
   `invModel` int(12) DEFAULT 0,
   `invQuantity` int(12) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `accounts`
---
-
-CREATE TABLE `accounts` (
-  `ID` int(12) NOT NULL,
-  `UCP` varchar(22) NOT NULL,
-  `Password` varchar(60) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -160,7 +255,7 @@ CREATE TABLE `rental` (
   `Vehicle2` int(6) NOT NULL DEFAULT 0,
   `Price1` int(6) NOT NULL DEFAULT 0,
   `Price2` int(6) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -192,11 +287,17 @@ CREATE TABLE `vehicle` (
   `vehPlate` varchar(16) NOT NULL DEFAULT 'NONE',
   `vehRental` int(4) NOT NULL DEFAULT -1,
   `vehRentalTime` int(8) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `accounts`
+--
+ALTER TABLE `accounts`
+  ADD PRIMARY KEY (`ID`);
 
 --
 -- Indexes for table `business`
@@ -217,16 +318,28 @@ ALTER TABLE `dropped`
   ADD PRIMARY KEY (`ID`);
 
 --
+-- Indexes for table `furniture`
+--
+ALTER TABLE `furniture`
+  ADD PRIMARY KEY (`furnitureID`);
+
+--
+-- Indexes for table `houses`
+--
+ALTER TABLE `houses`
+  ADD PRIMARY KEY (`houseID`);
+
+--
+-- Indexes for table `housestorage`
+--
+ALTER TABLE `housestorage`
+  ADD PRIMARY KEY (`itemID`);
+
+--
 -- Indexes for table `inventory`
 --
 ALTER TABLE `inventory`
   ADD PRIMARY KEY (`invID`);
-
---
--- Indexes for table `accounts`
---
-ALTER TABLE `accounts`
-  ADD PRIMARY KEY (`ID`);
 
 --
 -- Indexes for table `rental`
@@ -243,6 +356,12 @@ ALTER TABLE `vehicle`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `accounts`
+--
+ALTER TABLE `accounts`
+  MODIFY `ID` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `business`
@@ -263,16 +382,28 @@ ALTER TABLE `dropped`
   MODIFY `ID` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1063;
 
 --
+-- AUTO_INCREMENT for table `furniture`
+--
+ALTER TABLE `furniture`
+  MODIFY `furnitureID` int(12) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `houses`
+--
+ALTER TABLE `houses`
+  MODIFY `houseID` int(12) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `housestorage`
+--
+ALTER TABLE `housestorage`
+  MODIFY `itemID` int(12) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
   MODIFY `invID` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1209;
-
---
--- AUTO_INCREMENT for table `accounts`
---
-ALTER TABLE `accounts`
-  MODIFY `ID` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `rental`
