@@ -1,0 +1,65 @@
+#
+# Package only files
+#
+
+# Compiled Bytecode, precompiled output and assembly
+*.amx
+*.lst
+*.asm
+
+# Vendor directory for dependencies
+dependencies/
+bot/node_modules/
+sampmailer/node_modules/
+
+# Dependency versions lockfile
+pawn.lock
+
+
+#
+# Server/gamemode related files
+#
+
+# compiled settings file
+# keep `samp.json` file on version control
+# but make sure the `rcon_password` field is set externally
+# you can use the environment variable `SAMP_RCON_PASSWORD` to do this.
+server.cfg
+
+# Plugins directory
+plugins/
+
+# Pawno
+pawno/
+
+# maps
+maps/
+
+# binaries
+*.exe
+*.so
+announce
+samp03svr
+samp-npc
+
+# logs
+scriptfiles/logs/
+logs/
+server_log.txt
+crashinfo.txt
+nohup.out
+
+# Ban list
+samp.ban
+
+#
+# Common files
+#
+
+*.sublime-workspace
+filterscripts/
+*.zip
+*.amx
+log-core.dll
+libmariadb.dll
+.env

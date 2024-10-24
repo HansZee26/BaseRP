@@ -335,7 +335,7 @@ stock House_WeaponStorage(playerid, houseid)
 		else
 			format(string, sizeof(string), "%s%s ({FFFF00}Ammo: %d{FFFFFF}) ({00FFFF}Durability: %d{FFFFFF})\n", string, ReturnWeaponName(HouseData[houseid][houseWeapons][i]), HouseData[houseid][houseAmmo][i], HouseData[houseid][houseDurability][i]);
 	}
-	ShowPlayerDialog(playerid, DIALOG_HOUSEWEAPON, DIALOG_STYLE_LIST, "Weapon Storage", string, "Select", "Cancel");
+	Dialog_Show(playerid, DIALOG_HOUSEWEAPON, DIALOG_STYLE_LIST, "Weapon Storage", string, "Select", "Cancel");
 	return 1;
 }
 
@@ -354,7 +354,7 @@ stock House_OpenStorage(playerid, houseid)
 	    items[1]++;
 	}
  	format(string, sizeof(string), "Item Storage (%d/%d)\nWeapon Storage (%d/10)", items[0], MAX_HOUSE_STORAGE, items[1]);
-	ShowPlayerDialog(playerid, DIALOG_HOUSESTORAGE, DIALOG_STYLE_LIST, "House Storage", string, "Select", "Cancel");
+	Dialog_Show(playerid, DIALOG_HOUSESTORAGE, DIALOG_STYLE_LIST, "House Storage", string, "Select", "Cancel");
 	return 1;
 }
 
@@ -386,11 +386,11 @@ stock House_ShowItems(playerid, houseid)
 			else format(string, sizeof(string), "%s%s (%d)\n", string, name, HouseStorage[houseid][i][hItemQuantity]);
 		}
 	}
-	ShowPlayerDialog(playerid, DIALOG_HOUSEITEM, DIALOG_STYLE_LIST, "Item Storage", string, "Select", "Cancel");
+	Dialog_Show(playerid, DIALOG_HOUSEITEM, DIALOG_STYLE_LIST, "Item Storage", string, "Select", "Cancel");
 	return 1;
 }
 
-stock House_GetItemID(houseid, item[])
+stock House_GetItemID(houseid, const item[])
 {
 	if (houseid == -1 || !HouseData[houseid][houseExists])
 	    return 0;
@@ -418,7 +418,7 @@ stock House_GetFreeID(houseid)
 	return -1;
 }
 
-stock House_AddItem(houseid, item[], model, quantity = 1, slotid = -1)
+stock House_AddItem(houseid, const item[], model, quantity = 1, slotid = -1)
 {
     if (houseid == -1 || !HouseData[houseid][houseExists])
 	    return 0;
@@ -465,7 +465,7 @@ FUNC::OnStorageAdd(houseid, itemid)
 	return 1;
 }
 
-stock House_RemoveItem(houseid, item[], quantity = 1)
+stock House_RemoveItem(houseid, const item[], quantity = 1)
 {
     if (houseid == -1 || !HouseData[houseid][houseExists])
 	    return 0;
@@ -814,7 +814,7 @@ stock Furniture_Save(furnitureid)
 	return mysql_tquery(sqlcon, string);
 }
 
-stock Furniture_Add(houseid, name[], modelid, Float:x, Float:y, Float:z, Float:rx = 0.0, Float:ry = 0.0, Float:rz = 0.0)
+stock Furniture_Add(houseid, const name[], modelid, Float:x, Float:y, Float:z, Float:rx = 0.0, Float:ry = 0.0, Float:rz = 0.0)
 {
 	static
 	    string[64],
@@ -879,7 +879,7 @@ stock Furniture_Delete(furnitureid)
 		if(IsValidDynamicObject(FurnitureData[furnitureid][furnitureObject]))
 			DestroyDynamicObject(FurnitureData[furnitureid][furnitureObject]);
 
-		Iter_SafeRemove(Furniture, furnitureid, furnitureid);
+		Iter_Remove(Furniture, furnitureid);
 	}
 	return 1;
 }
@@ -1062,7 +1062,7 @@ stock House_Delete(houseid)
 	    HouseData[houseid][houseExists] = false;
 	    HouseData[houseid][houseOwner] = 0;
 	    HouseData[houseid][houseID] = 0;
-	    Iter_SafeRemove(House, houseid, houseid);
+	    Iter_Remove(House, houseid);
 	}
 	return 1;
 }
@@ -1122,7 +1122,7 @@ CMD:house(playerid, params[])
 	{
 		if((id = HousePark_Nearest(playerid)) != -1 && House_IsOwner(playerid, id))
 		{
-			ShowPlayerDialog(playerid, DIALOG_HOUSE_PARK, DIALOG_STYLE_LIST, sprintf("Parking Slot: %d", HouseData[id][housePark]), "Take Vehicle\nPark Vehicle", "Select", "Close");
+			Dialog_Show(playerid, DIALOG_HOUSE_PARK, DIALOG_STYLE_LIST, sprintf("Parking Slot: %d", HouseData[id][housePark]), "Take Vehicle\nPark Vehicle", "Select", "Close");
 		}
 	}
 	else if(!strcmp(type, "lock", true))
@@ -1177,7 +1177,7 @@ CMD:house(playerid, params[])
 		if(!House_IsOwner(playerid, id))
 			return SendErrorMessage(playerid, "You must inside your own house!");
 
-		ShowPlayerDialog(playerid, DIALOG_HOUSE_MENU, DIALOG_STYLE_LIST, "House Menu", "Furniture\nStorage", "Select", "Close");
+		Dialog_Show(playerid, DIALOG_HOUSE_MENU, DIALOG_STYLE_LIST, "House Menu", "Furniture\nStorage", "Select", "Close");
 	}
 	return 1;
 }

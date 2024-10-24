@@ -14,7 +14,7 @@ CMD:rentinfo(playerid, params[])
 		}
 	}
 	if(have)
-		ShowPlayerDialog(playerid, DIALOG_NONE, DIALOG_STYLE_TABLIST_HEADERS, "Rental Information", str, "Close", "");
+		Dialog_Show(playerid, DIALOG_NONE, DIALOG_STYLE_TABLIST_HEADERS, "Rental Information", str, "Close", "");
 	else
 		SendErrorMessage(playerid, "Kamu tidak memiliki kendaraan Rental!");
 	return 1;
@@ -25,7 +25,7 @@ CMD:help(playerid, params[])
 	if(!PlayerData[playerid][pSpawned])
 		return SendErrorMessage(playerid, "You're not spawned!");
 
-	ShowPlayerDialog(playerid, DIALOG_HELP, DIALOG_STYLE_LIST, "Help Menu", "General Commands\nChat Commands\nJob Commands\nFaction Commands\nBusiness Commands\nHouse Commands\nBank Commands\nDealership Commands\nWorkshop Commands\nPrivate Farm Commands", "Select", "Close");
+	Dialog_Show(playerid, DIALOG_HELP, DIALOG_STYLE_LIST, "Help Menu", "General Commands\nChat Commands\nJob Commands\nFaction Commands\nBusiness Commands\nHouse Commands\nBank Commands\nDealership Commands\nWorkshop Commands\nPrivate Farm Commands", "Select", "Close");
 	return 1;
 }
 

@@ -540,7 +540,7 @@ CMD:v(playerid, params[])
 			have = true;
 		}
 		if(have)
-		    ShowPlayerDialog(playerid, DIALOG_NONE, DIALOG_STYLE_TABLIST_HEADERS, "Vehicle List", str, "Close", "");
+		    Dialog_Show(playerid, DIALOG_NONE, DIALOG_STYLE_TABLIST_HEADERS, "Vehicle List", str, "Close", "");
 		else
 			SendErrorMessage(playerid, "You don't have any Vehicles!");
 	}

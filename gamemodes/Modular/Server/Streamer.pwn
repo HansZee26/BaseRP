@@ -26,6 +26,6 @@ stock StreamerConfig()
 
 CMD:config(playerid, params[])
 {
-	ShowPlayerDialog(playerid, DIALOG_STREAMER_CONFIG, DIALOG_STYLE_LIST, "Maximum object Configuration", "High level Configuration\nMedium level Configuration\nLow level Configuration\nPotato level Configuration", "Set", "Close");
+	Dialog_Show(playerid, DIALOG_STREAMER_CONFIG, DIALOG_STYLE_LIST, "Maximum object Configuration", "High level Configuration\nMedium level Configuration\nLow level Configuration\nPotato level Configuration", "Set", "Close");
 	return 1;
 }

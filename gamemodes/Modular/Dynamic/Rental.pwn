@@ -172,7 +172,7 @@ CMD:rentvehicle(playerid, params[])
 	        {
 	            format(gstr, sizeof(gstr), "%s%i\t~w~%s~n~~g~Price: $%d\n", gstr, RentData[i][rentModel][z], GetVehicleModelName(RentData[i][rentModel][z]), RentData[i][rentPrice][z]);
 			}
-			ShowPlayerDialog(playerid, DIALOG_RENTAL, DIALOG_STYLE_PREVIEW_MODEL, "Vehicle Rental", gstr, "Select", "Close");
+			Dialog_Show(playerid, DIALOG_RENTAL, DIALOG_STYLE_PREVIEW_MODEL, "Vehicle Rental", gstr, "Select", "Close");
 			PlayerData[playerid][pRenting] = i;
 		}
 	}

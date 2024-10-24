@@ -46,7 +46,7 @@ FUNC::Dropped_Load()
 	return 1;
 }
 
-DropItem(item[], player[], model, quantity, Float:x, Float:y, Float:z, interior, world, weaponid = 0, ammo = 0)
+DropItem(const item[], const player[], model, quantity, Float:x, Float:y, Float:z, interior, world, weaponid = 0, ammo = 0)
 {
 	new
 	    query[300];

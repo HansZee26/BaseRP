@@ -405,7 +405,7 @@ stock GetLocation(Float:fX, Float:fY, Float:fZ)
     return name;
 }
 
-stock strcash(value[])
+stock strcash(const value[])
 {
 	new dollars, cents, totalcash[25];
 	if(strfind(value, ".", true) != -1)
@@ -474,7 +474,7 @@ stock SendAdminMessage(color, const str[], {Float,_}:...)
 }
 
 
-stock ShowMessage(playerid, string[], time)//Time in Sec.
+stock ShowMessage(playerid, const string[], time)//Time in Sec.
 {
 	new validtime = time*1000;
 
@@ -557,25 +557,12 @@ stock ConvertHBEColor(value)
     return color;
 }
 
-stock ShowText(playerid, text[], time)
+stock ShowText(playerid, const text[], time)
 {
 	new total = time * 1000;
 	new str[256];
 	format(str, sizeof(str), "%s", text);
 	GameTextForPlayer(playerid, str, total, 5);
-	return 1;
-}
-
-IsNumeric(const str[])
-{
-	for (new i = 0, l = strlen(str); i != l; i ++)
-	{
-	    if (i == 0 && str[0] == '-')
-			continue;
-
-	    else if (str[i] < '0' || str[i] > '9')
-			return 0;
-	}
 	return 1;
 }
 
@@ -667,7 +654,7 @@ GetEngineStatus(vehicleid)
 }
 
 
-FormatNumber(number, prefix[] = "$")
+FormatNumber(number, const prefix[] = "$")
 {
 	static
 		value[32],
@@ -745,14 +732,21 @@ Database_Connect()
 	}
 }
 
-stock IsRoleplayName(player[])
-{
-    forex(n,strlen(player))
-    {
-        if (player[n] == '_' && player[n+1] >= 'A' && player[n+1] <= 'Z') return 1;
-        if (player[n] == ']' || player[n] == '[') return 0;
+stock IsRoleplayName(const name[]) {
+	if (!name[0] || strfind(name, "_") == -1)
+	    return false;
+
+	else for (new i = 0, len = strlen(name); i != len; i ++) {
+	    if ((i == 0) && (name[i] < 'A' || name[i] > 'Z'))
+	        return false;
+
+		else if ((i != 0 && i < len  && name[i] == '_') && (name[i + 1] < 'A' || name[i + 1] > 'Z'))
+		    return false;
+
+		else if ((name[i] < 'A' || name[i] > 'Z') && (name[i] < 'a' || name[i] > 'z') && name[i] != '_' && name[i] != '.')
+		    return false;
 	}
-    return 0;
+	return true;
 }
 
 stock IsPlayerNearPlayer(playerid, targetid, Float:radius)
@@ -839,7 +833,7 @@ stock CheckAccount(playerid)
 	else
 	{
 		format(str, sizeof(str), "{FFFFFF}UCP Account: {00FFFF}%s\n{FFFFFF}Belum terdaftar\nSilahkan login ulang menggunakan non rp name untuk register", GetName(playerid));
-		ShowPlayerDialog(playerid, DIALOG_NONE, DIALOG_STYLE_MSGBOX, "UCP", str, "", "Exit");
+		Dialog_Show(playerid, DIALOG_NONE, DIALOG_STYLE_MSGBOX, "UCP", str, "", "Exit");
 		KickEx(playerid);
 	}
 	return 1;
@@ -868,7 +862,7 @@ FUNC::CheckPlayerData(playerid)
 	else
 	{
 		format(str, sizeof(str), "{FFFFFF}UCP Account: {00FFFF}%s\n{FFFFFF}Belum terdaftar\nSilahkan login ulang menggunakan non rp name untuk register", GetName(playerid));
-		ShowPlayerDialog(playerid, DIALOG_NONE, DIALOG_STYLE_MSGBOX, "UCP", str, "", "Exit");
+		Dialog_Show(playerid, DIALOG_NONE, DIALOG_STYLE_MSGBOX, "UCP", str, "", "Exit");
 		KickEx(playerid);
 	}
 	return 1;
@@ -882,12 +876,12 @@ FUNC::CheckPlayerUCP(playerid)
 	{
 	    cache_get_value_name(0, "UCP", tempUCP[playerid]);
 	    format(str, sizeof(str), "{FFFFFF}UCP Account: {00FFFF}%s\n{FFFFFF}Attempts: {00FFFF}%d/5\n{FFFFFF}Password: {FF00FF}(Input Below)", GetName(playerid), PlayerData[playerid][pAttempt]);
-		ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "Login to Xyronite", str, "Login", "Exit");
+		Dialog_Show(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "Login to Xyronite", str, "Login", "Exit");
 	}
 	else
 	{
 	    format(str, sizeof(str), "{FFFFFF}UCP Account: {00FFFF}%s\n{FFFFFF}Attempts: {00FFFF}%d/5\n{FFFFFF}Create Password: {FF00FF}(Input Below)", GetName(playerid), PlayerData[playerid][pAttempt]);
-		ShowPlayerDialog(playerid, DIALOG_REGISTER, DIALOG_STYLE_PASSWORD, "Register to Xyronite", str, "Register", "Exit");
+		Dialog_Show(playerid, DIALOG_REGISTER, DIALOG_STYLE_PASSWORD, "Register to Xyronite", str, "Register", "Exit");
 	}
 	return 1;
 }
@@ -992,7 +986,7 @@ ShowCharacterList(playerid)
 	if(count < MAX_CHARS)
 		strcat(name, "< Create Character >");
 
-	ShowPlayerDialog(playerid, DIALOG_CHARLIST, DIALOG_STYLE_LIST, "Character List", name, "Select", "Quit");
+	Dialog_Show(playerid, DIALOG_CHARLIST, DIALOG_STYLE_LIST, "Character List", name, "Select", "Quit");
 	return 1;
 }
 
@@ -1020,7 +1014,7 @@ FUNC::OnPlayerPasswordChecked(playerid, bool:success)
 	    if(PlayerData[playerid][pAttempt] < 5)
 	    {
 		    PlayerData[playerid][pAttempt]++;
-	        ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "Login to Xyronite", str, "Login", "Exit");
+	        Dialog_Show(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "Login to Xyronite", str, "Login", "Exit");
 			return 1;
 		}
 		else
@@ -1037,12 +1031,12 @@ FUNC::OnPlayerPasswordChecked(playerid, bool:success)
 }
 
 
-FUNC::InsertPlayerName(playerid, name[])
+FUNC::InsertPlayerName(playerid, const name[])
 {
 	new count = cache_num_rows(), query[145], Cache:execute;
 	if(count > 0)
 	{
-        ShowPlayerDialog(playerid, DIALOG_MAKECHAR, DIALOG_STYLE_INPUT, "Create Character", "ERROR: This name is already used by the other player!\nInsert your new Character Name\n\nExample: Finn_Xanderz, Javier_Cooper etc.", "Create", "Back");
+        Dialog_Show(playerid, DIALOG_MAKECHAR, DIALOG_STYLE_INPUT, "Create Character", "ERROR: This name is already used by the other player!\nInsert your new Character Name\n\nExample: Finn_Xanderz, Javier_Cooper etc.", "Create", "Back");
 	}
 	else
 	{
@@ -1052,7 +1046,7 @@ FUNC::InsertPlayerName(playerid, name[])
 	 	cache_delete(execute);
 	 	SetPlayerName(playerid, name);
 		format(PlayerData[playerid][pName], MAX_PLAYER_NAME, name);
-	 	ShowPlayerDialog(playerid, DIALOG_AGE, DIALOG_STYLE_INPUT, "Character Age", "Please Insert your Character Age", "Continue", "Cancel");
+	 	Dialog_Show(playerid, DIALOG_AGE, DIALOG_STYLE_INPUT, "Character Age", "Please Insert your Character Age", "Continue", "Cancel");
 	}
 	return 1;
 }
@@ -1130,7 +1124,7 @@ stock ResetVariable(playerid)
 	return 1;
 }
 
-ProxDetector(Float: f_Radius, playerid, string[],col1,col2,col3,col4,col5)
+ProxDetector(Float: f_Radius, playerid, const string[],col1,col2,col3,col4,col5)
 {
 		new
 			Float: f_playerPos[3];

@@ -2814,7 +2814,7 @@ public OnVehiclePaintjob(playerid,vehicleid,paintjobid){
 #endif
 
 //Hook: CreateVehicle
-stock EVF::CreateVehicle(modelid,Float:x,Float:y,Float:z,Float:angle,color1,color2,respawn_delay,addsiren = 0,worldid = 0,interiorid = 0,bool:unoccupied_damage = false){
+stock EVF::CreateVehicle(modelid,Float:x,Float:y,Float:z,Float:angle,color1,color2,respawn_delay,bool:addsiren = false,worldid = 0,interiorid = 0,bool:unoccupied_damage = false){
 	if(!IsValidVehicleModelID(modelid)) return INVALID_VEHICLE_ID;
 	new vehicleid = INVALID_VEHICLE_ID, randcolor1, randcolor2;
 	if(GetVehicleRandomColors(modelid,randcolor1,randcolor2)){

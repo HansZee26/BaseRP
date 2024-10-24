@@ -319,7 +319,7 @@ stock SetProductPrice(playerid)
 			);
 		}
 	}
-	ShowPlayerDialog(playerid, DIALOG_BIZPRICE, DIALOG_STYLE_TABLIST_HEADERS, "Set Product Price", string, "Select", "Close");
+	Dialog_Show(playerid, DIALOG_BIZPRICE, DIALOG_STYLE_TABLIST_HEADERS, "Set Product Price", string, "Select", "Close");
 	return 1;
 }
 
@@ -376,7 +376,7 @@ stock SetProductName(playerid)
 			);
 		}
 	}
-	ShowPlayerDialog(playerid, DIALOG_BIZPROD, DIALOG_STYLE_TABLIST_HEADERS, "Set Product Name", string, "Select", "Close");
+	Dialog_Show(playerid, DIALOG_BIZPROD, DIALOG_STYLE_TABLIST_HEADERS, "Set Product Name", string, "Select", "Close");
 	return 1;
 }
 
@@ -433,7 +433,7 @@ stock ShowBusinessMenu(playerid)
 			);
 		}
 	}
-	ShowPlayerDialog(playerid, DIALOG_BIZBUY, DIALOG_STYLE_TABLIST_HEADERS, "Business Product", string, "Select", "Close");
+	Dialog_Show(playerid, DIALOG_BIZBUY, DIALOG_STYLE_TABLIST_HEADERS, "Business Product", string, "Select", "Close");
 	return 1;
 }
 
@@ -478,7 +478,7 @@ CMD:biz(playerid, params[])
 	{
 		if(PlayerData[playerid][pInBiz] != -1 && GetPlayerInterior(playerid) == BizData[PlayerData[playerid][pInBiz]][bizInterior] && GetPlayerVirtualWorld(playerid) == BizData[PlayerData[playerid][pInBiz]][bizWorld] && Biz_IsOwner(playerid, PlayerData[playerid][pInBiz]))
 		{
-		    ShowPlayerDialog(playerid, DIALOG_BIZMENU, DIALOG_STYLE_LIST, "Business Menu", "Set Product Name\nSet Product Price\nSet Business Name", "Select", "Close");
+		    Dialog_Show(playerid, DIALOG_BIZMENU, DIALOG_STYLE_LIST, "Business Menu", "Set Product Name\nSet Product Price\nSet Business Name", "Select", "Close");
 		}
 		else
 			SendErrorMessage(playerid, "Kamu tidak berada didalam bisnis milikmu!");

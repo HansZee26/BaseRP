@@ -131,7 +131,7 @@ stock HideModelSelectionMenu(playerid)
 	return 1;
 }
 
-stock ShowModelSelectionMenu(playerid, header[], extraid, items[], size = sizeof(items), Float:fRotX = 0.0, Float:fRotY = 0.0, Float:fRotZ = 0.0, Float:fZoom = 1.0, carcol = -1, bool:amount = false, amounts[] = {-1}, prefix[] = "")
+stock ShowModelSelectionMenu(playerid, const header[], extraid, const items[], size = sizeof(items), Float:fRotX = 0.0, Float:fRotY = 0.0, Float:fRotZ = 0.0, Float:fZoom = 1.0, carcol = -1, bool:amount = false, amounts[] = {-1}, prefix[] = "")
 {
 	if (!IsPlayerConnected(playerid))
 	    return 0;

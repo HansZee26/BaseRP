@@ -74,7 +74,7 @@ stock Inventory_Clear(playerid)
 	return mysql_tquery(sqlcon, string);
 }
 
-stock Inventory_GetItemID(playerid, item[])
+stock Inventory_GetItemID(playerid, const item[])
 {
 	forex(i, MAX_INVENTORY)
 	{
@@ -109,7 +109,7 @@ stock Inventory_Items(playerid)
 	return count;
 }
 
-stock Inventory_Count(playerid, item[])
+stock Inventory_Count(playerid, const item[])
 {
 	new itemid = Inventory_GetItemID(playerid, item);
 
@@ -119,12 +119,12 @@ stock Inventory_Count(playerid, item[])
 	return 0;
 }
 
-stock PlayerHasItem(playerid, item[])
+stock PlayerHasItem(playerid, const item[])
 {
 	return (Inventory_GetItemID(playerid, item) != -1);
 }
 
-stock Inventory_Set(playerid, item[], model, amount)
+stock Inventory_Set(playerid, const item[], model, amount)
 {
 	new itemid = Inventory_GetItemID(playerid, item);
 
@@ -140,7 +140,7 @@ stock Inventory_Set(playerid, item[], model, amount)
 	return 1;
 }
 
-stock Inventory_SetQuantity(playerid, item[], quantity)
+stock Inventory_SetQuantity(playerid, const item[], quantity)
 {
 	new
 	    itemid = Inventory_GetItemID(playerid, item),
@@ -156,7 +156,7 @@ stock Inventory_SetQuantity(playerid, item[], quantity)
 	return 1;
 }
 
-stock Inventory_Remove(playerid, item[], quantity = 1)
+stock Inventory_Remove(playerid, const item[], quantity = 1)
 {
 	new
 		itemid = Inventory_GetItemID(playerid, item),
@@ -187,7 +187,7 @@ stock Inventory_Remove(playerid, item[], quantity = 1)
 	return 0;
 }
 
-stock Inventory_Add(playerid, item[], model, quantity = 1)
+stock Inventory_Add(playerid, const item[], model, quantity = 1)
 {
 	new
 		itemid = Inventory_GetItemID(playerid, item),
@@ -252,7 +252,7 @@ FUNC::ShowInventory(playerid, targetid)
    			format(str, sizeof(str), "%s\n%s\t%d", str, string, amounts[i]);
 		}
 	}
-	ShowPlayerDialog(playerid, DIALOG_NONE, DIALOG_STYLE_TABLIST_HEADERS, "Inventory Data", str,  "Close", "");
+	Dialog_Show(playerid, DIALOG_NONE, DIALOG_STYLE_TABLIST_HEADERS, "Inventory Data", str,  "Close", "");
 	return 1;
 
 }
@@ -284,7 +284,7 @@ FUNC::OpenInventory(playerid)
 	}
 	if(count)
 	{
-		ShowPlayerDialog(playerid, DIALOG_INVENTORY, DIALOG_STYLE_TABLIST_HEADERS, "Inventory Data", str, "Select", "Close");
+		Dialog_Show(playerid, DIALOG_INVENTORY, DIALOG_STYLE_TABLIST_HEADERS, "Inventory Data", str, "Select", "Close");
 	}
 	else
 	{
